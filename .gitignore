@@ -16,7 +16,10 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 
-# Eclipse
+.cache-main
+.cache-tests
+
+/bin
 /.classpath
 /.project
 /.settings
