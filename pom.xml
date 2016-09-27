@@ -1,0 +1,108 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.arangodb</groupId>
+	<artifactId>arangodb-spark-connector</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<inceptionYear>2016</inceptionYear>
+	<packaging>jar</packaging>
+
+	<name>arangodb-spark-connector</name>
+	<description>ArangoDB Spark Connector</description>
+	<url>http://maven.apache.org</url>
+
+	<licenses>
+		<license>
+			<name>Apache License 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<skipMain>true</skipMain> <!-- skip compile -->
+					<skip>true</skip> <!-- skip testCompile -->
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.google.code.sbt-compiler-maven-plugin</groupId>
+				<artifactId>sbt-compiler-maven-plugin</artifactId>
+				<version>1.0.0-beta9</version>
+				<configuration>
+					<scalaVersion>2.11.8</scalaVersion>
+				</configuration>
+				<executions>
+					<execution>
+						<id>default-sbt-compile</id>
+						<goals>
+							<goal>addScalaSources</goal>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.arangodb</groupId>
+			<artifactId>arangodb-java-driver</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-core_2.11</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-sql_2.11</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.scalatest</groupId>
+			<artifactId>scalatest_2.11</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.arangodb</groupId>
+				<artifactId>arangodb-java-driver</artifactId>
+				<version>4.0.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.spark</groupId>
+				<artifactId>spark-core_2.11</artifactId>
+				<version>1.6.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.spark</groupId>
+				<artifactId>spark-sql_2.11</artifactId>
+				<version>1.6.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scalatest</groupId>
+				<artifactId>scalatest_2.11</artifactId>
+				<version>3.0.0</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>
