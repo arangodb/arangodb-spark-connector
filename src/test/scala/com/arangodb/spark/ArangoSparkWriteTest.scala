@@ -1,3 +1,25 @@
+/*
+ * DISCLAIMER
+ *
+ * Copyright 2016 ArangoDB GmbH, Cologne, Germany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Copyright holder is ArangoDB GmbH, Cologne, Germany
+ * 
+ * author Mark - mark at arangodb.com
+ */
+
 package com.arangodb.spark
 
 import org.apache.spark.SparkConf
@@ -6,25 +28,22 @@ import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.Finders
 import org.scalatest.FunSuite
 import org.scalatest.Matchers
 
 import com.arangodb.ArangoDB
-import com.arangodb.entity.BaseDocument
-import com.arangodb.velocypack._
-import collection.JavaConversions._
-import com.arangodb.ArangoCursor
 import com.arangodb.ArangoDBException
+import com.arangodb.velocypack.VPackBuilder
+import com.arangodb.velocypack.ValueType
 
-class ArangoDBSparkTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach {
+class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach {
 
   val DB = "spark_test_db"
   val COLLECTION = "spark_test_col"
   val arangoDB = new ArangoDB.Builder().build()
   val conf = new SparkConf()
     .setMaster("local")
-    .setAppName("ArangoDBSparkTest")
+    .setAppName("ArangoSparkWriteTest")
     .set("arangodb.user", "root")
     .set("arangodb.password", "")
   val sc = new SparkContext(conf)
@@ -48,11 +67,15 @@ class ArangoDBSparkTest extends FunSuite with Matchers with BeforeAndAfterAll wi
     arangoDB.db(DB).collection(COLLECTION).truncate()
   }
 
+  private def checkDocumentCount(count: Int) {
+    arangoDB.db(DB).collection(COLLECTION).count().getCount should be(count)
+  }
+
   test("save RDD to ArangoDB") {
     checkDocumentCount(0)
 
     val documents = sc.parallelize((1 to 100).map { i => TestEntity(i) })
-    ArangoDBSpark.save(documents, COLLECTION, SaveOptions(DB))
+    ArangoSpark.save(documents, COLLECTION, WriteOptions(DB))
 
     checkDocumentCount(100)
   }
@@ -61,7 +84,7 @@ class ArangoDBSparkTest extends FunSuite with Matchers with BeforeAndAfterAll wi
     checkDocumentCount(0)
 
     val documents = sc.parallelize((1 to 100).map { i => new VPackBuilder().add(ValueType.OBJECT).add("test", java.lang.Integer.valueOf(i)).close().slice() })
-    ArangoDBSpark.save(documents, COLLECTION, SaveOptions(DB))
+    ArangoSpark.save(documents, COLLECTION, WriteOptions(DB))
 
     checkDocumentCount(100)
   }
@@ -72,7 +95,7 @@ class ArangoDBSparkTest extends FunSuite with Matchers with BeforeAndAfterAll wi
     val documents = sc.parallelize((1 to 100).map { i => TestEntity(i) })
     val sql: SQLContext = SQLContext.getOrCreate(sc);
     val df = sql.createDataFrame(documents, classOf[TestEntity])
-    ArangoDBSpark.save(df, COLLECTION, SaveOptions(DB))
+    ArangoSpark.save(df, COLLECTION, WriteOptions(DB))
 
     checkDocumentCount(100)
   }
@@ -84,13 +107,9 @@ class ArangoDBSparkTest extends FunSuite with Matchers with BeforeAndAfterAll wi
     val sql: SQLContext = SQLContext.getOrCreate(sc);
     val encoder = ExpressionEncoder.javaBean(classOf[TestEntity])
     val ds = sql.createDataset(documents)(encoder);
-    ArangoDBSpark.save(ds, COLLECTION, SaveOptions(DB))
+    ArangoSpark.save(ds, COLLECTION, WriteOptions(DB))
 
     checkDocumentCount(100)
-  }
-
-  private def checkDocumentCount(count: Int) {
-    arangoDB.db(DB).collection(COLLECTION).count().getCount should be(count)
   }
 
 }
