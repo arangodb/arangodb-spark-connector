@@ -28,7 +28,7 @@ import com.arangodb.spark._
 class ArangoPartitionierByDocumentCount(documentsPerPartition: Int) extends ArangoPartioner {
 
   override def createPartitions(options: ReadOptions): Array[ArangoPartition] = {
-    val count = createArangoBuilder(options).build().db(options.database).collection(options.collection.get).count().getCount
+    val count = createArangoBuilder(options).build().db(options.database).collection(options.collection).count().getCount
     val numPartitions = math.ceil(count.toDouble / documentsPerPartition.toDouble).toInt
     new ArangoPartitionierByPartitionCount(numPartitions).createPartitions(options)
   }

@@ -29,21 +29,8 @@ trait ArangoPartioner extends Serializable {
   def createPartitions(options: ReadOptions): Array[ArangoPartition]
 
   def createPartition(index: Int, numPartitions: Int, options: ReadOptions): ArangoPartition = {
-    val partitionKey = options.partitionKey match {
-      case None => "_key"
-      case _    => options.partitionKey.get
-    }
-    val query = options.query match {
-      case None => s"FOR i IN @@col FILTER HASH(i.$partitionKey) % @numPartitions == @partitionIndex RETURN i"
-      case _    => "LET userQuery = (" + options.query.get + ") FOR uqe IN userQuery FILTER HASH(uqe." + partitionKey + ") % @numPartitions == @partitionIndex RETURN uqe"
-    }
-    var bindVars = options.bindVars match {
-      case None => Map[String, Object]()
-      case _    => options.bindVars.get
-    }
-    options.collection.foreach { col => bindVars += "@col" -> col }
-    bindVars += "numPartitions" -> Int.box(numPartitions)
-    bindVars += "partitionIndex" -> Int.box(index)
+    val query = s"FOR i IN @@col FILTER HASH(i._key) % @numPartitions == @partitionIndex RETURN i"
+    var bindVars = Map[String, Object]("@col" -> options.collection, "numPartitions" -> Int.box(numPartitions), "partitionIndex" -> Int.box(index))
     ArangoPartition(index, options, query, bindVars)
   }
 

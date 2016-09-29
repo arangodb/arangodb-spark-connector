@@ -72,16 +72,6 @@ class ArangoSparkReadTest extends FunSuite with Matchers with BeforeAndAfterAll 
     rdd.count() should be(100)
   }
 
-  test("load all documents from collection with custom partitionKey") {
-    val rdd = ArangoSpark.load[TestEntity](sc, COLLECTION, ReadOptions(DB, partitionKey = Some("_key")))
-    rdd.count() should be(100)
-  }
-
-  test("load with custom query") {
-    val rdd = ArangoSpark.load[TestEntity](sc, s"for i in $COLLECTION return i", Map[String, Object](), "_key", ReadOptions(DB))
-    rdd.count() should be(100)
-  }
-
   test("load with custom partionier") {
     val rdd = ArangoSpark.load[TestEntity](sc, COLLECTION, ReadOptions(DB, partitioner = new ArangoPartitionierByPartitionCount(1)))
     rdd.count() should be(100)

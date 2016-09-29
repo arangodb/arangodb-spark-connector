@@ -72,12 +72,6 @@ object ArangoSpark {
     load(sparkContext, collection, ReadOptions())
 
   def load[T: ClassTag](sparkContext: SparkContext, collection: String, options: ReadOptions): ArangoRDD[T] =
-    new ArangoRDD[T](sparkContext, createReadOptions(options, sparkContext.getConf).copy(collection = Some(collection)))
-
-  def load[T: ClassTag](sparkContext: SparkContext, query: String, bindVars: Map[String, Object], partitionKey: String): ArangoRDD[T] =
-    load(sparkContext, query, bindVars, partitionKey, ReadOptions())
-
-  def load[T: ClassTag](sparkContext: SparkContext, query: String, bindVars: Map[String, Object], partitionKey: String, options: ReadOptions): ArangoRDD[T] =
-    new ArangoRDD[T](sparkContext, createReadOptions(options, sparkContext.getConf).copy(query = Some(query), bindVars = Some(bindVars), partitionKey = Some(partitionKey)))
+    new ArangoRDD[T](sparkContext, createReadOptions(options, sparkContext.getConf).copy(collection = collection))
 
 }

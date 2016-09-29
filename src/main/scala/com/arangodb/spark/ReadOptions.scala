@@ -26,10 +26,7 @@ import com.arangodb.spark.rdd.partition.ArangoPartioner
 import com.arangodb.spark.rdd.partition.ArangoDefaultPartitioner
 
 case class ReadOptions(override val database: String = "_system",
-                       val collection: Option[String] = None,
-                       val query: Option[String] = None,
-                       val bindVars: Option[Map[String, Object]] = None,
-                       val partitionKey: Option[String] = None,
+                       val collection: String = null,
                        val partitioner: ArangoPartioner = new ArangoDefaultPartitioner(),
                        override val host: Option[String] = None,
                        override val port: Option[Int] = None,
@@ -37,16 +34,13 @@ case class ReadOptions(override val database: String = "_system",
                        override val password: Option[String] = None) extends ArangoOptions {
 
   def copy(database: String = database,
-           collection: Option[String] = collection,
-           query: Option[String] = query,
-           bindVars: Option[Map[String, Object]] = bindVars,
-           partitionKey: Option[String] = partitionKey,
+           collection: String = collection,
            partitioner: ArangoPartioner = partitioner,
            host: Option[String] = host,
            port: Option[Int] = port,
            user: Option[String] = user,
            password: Option[String] = password): ReadOptions = {
-    ReadOptions(database, collection, query, bindVars, partitionKey, partitioner, host, port, user, password)
+    ReadOptions(database, collection, partitioner, host, port, user, password)
   }
 
 }

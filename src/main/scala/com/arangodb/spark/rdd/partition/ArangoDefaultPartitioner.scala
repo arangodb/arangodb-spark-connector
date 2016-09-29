@@ -27,13 +27,9 @@ import com.arangodb.spark.ReadOptions
 class ArangoDefaultPartitioner extends ArangoPartioner {
 
   private val DefaultDocumentsPerPartition = 100000
-  private val DefaultPartitions = 10
 
   override def createPartitions(options: ReadOptions): Array[ArangoPartition] = {
-    val partionier = options.collection match {
-      case None => new ArangoPartitionierByPartitionCount(DefaultPartitions)
-      case _    => new ArangoPartitionierByDocumentCount(DefaultDocumentsPerPartition)
-    }
+    val partionier = new ArangoPartitionierByDocumentCount(DefaultDocumentsPerPartition)
     partionier.createPartitions(options)
   }
 
