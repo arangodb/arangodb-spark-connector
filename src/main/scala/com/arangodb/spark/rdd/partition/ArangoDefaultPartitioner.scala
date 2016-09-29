@@ -29,7 +29,7 @@ class ArangoDefaultPartitioner extends ArangoPartioner {
   private val DefaultDocumentsPerPartition = 100000
 
   override def createPartitions(options: ReadOptions): Array[ArangoPartition] = {
-    val partionier = new ArangoPartitionierByDocumentCount(DefaultDocumentsPerPartition)
+    val partionier = new ArangoPartitionerByDocumentCount(DefaultDocumentsPerPartition)
     partionier.createPartitions(options)
   }
 

@@ -25,7 +25,7 @@ package com.arangodb.spark.rdd.partition
 import com.arangodb.spark.ReadOptions
 import com.arangodb.spark._
 
-class ArangoPartitionierByPartitionCount(numPartitions: Int) extends ArangoPartioner {
+class ArangoPartitionerByPartitionCount(numPartitions: Int) extends ArangoPartioner {
 
   override def createPartitions(options: ReadOptions): Array[ArangoPartition] = {
     val partitions = new Array[ArangoPartition](numPartitions)
