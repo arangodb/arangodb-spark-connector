@@ -62,7 +62,7 @@ object ArangoSpark {
       if (p.nonEmpty) {
         val arangoDB = createArangoBuilder(writeOptions).build()
         val col = arangoDB.db(writeOptions.database).collection(collection)
-        map(p).grouped(InsertDocumentsBatchSize).foreach(b => col.insertDocuments(b.toList.asJava))
+        col.insertDocuments(map(p).toList.asJava)
         arangoDB.shutdown()
       }
     }
