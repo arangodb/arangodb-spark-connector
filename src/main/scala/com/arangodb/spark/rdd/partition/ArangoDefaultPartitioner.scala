@@ -23,13 +23,19 @@
 package com.arangodb.spark.rdd.partition
 
 import com.arangodb.spark.ReadOptions
+import com.arangodb.spark._
 
 class ArangoDefaultPartitioner extends ArangoPartioner {
 
   private val DefaultDocumentsPerPartition = 100000
 
   override def createPartitions(options: ReadOptions): Array[ArangoPartition] = {
-    val partionier = new ArangoPartitionerByDocumentCount(DefaultDocumentsPerPartition)
+    val numShards = createArangoBuilder(options).build().db(options.database).collection(options.collection).getProperties.getNumberOfShards;
+    val partionier =
+      numShards match {
+        case null => new ArangoPartitionerByDocumentCount(DefaultDocumentsPerPartition)
+        case _    => new ArangoPartitionerByPartitionCount(numShards)
+      }
     partionier.createPartitions(options)
   }
 
