@@ -36,19 +36,14 @@ import com.arangodb.ArangoDBException
 import com.arangodb.velocypack.VPackBuilder
 import com.arangodb.velocypack.ValueType
 
-class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach {
+class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach with SharedSparkContext {
 
   val DB = "spark_test_db"
   val COLLECTION = "spark_test_col"
   val arangoDB = new ArangoDB.Builder().build()
-  val conf = new SparkConf()
-    .setMaster("local")
-    .setAppName("ArangoSparkWriteTest")
-    .set("arangodb.user", "root")
-    .set("arangodb.password", "")
-  val sc = new SparkContext(conf)
 
   override def beforeAll() {
+    super.beforeAll()
     try {
       arangoDB.db(DB).drop()
     } catch {
@@ -59,8 +54,12 @@ class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll
   }
 
   override def afterAll() {
-    arangoDB.db(DB).drop()
-    arangoDB.shutdown()
+    try {
+      arangoDB.db(DB).drop()
+      arangoDB.shutdown()
+    } finally {
+      super.afterAll()
+    }
   }
 
   override def afterEach() {

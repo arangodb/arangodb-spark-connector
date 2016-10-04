@@ -38,19 +38,14 @@ import com.arangodb.velocypack.ValueType
 import scala.reflect.ClassTag
 import com.arangodb.spark.rdd.partition.ArangoPartitionerByPartitionCount
 
-class ArangoSparkReadTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach {
+class ArangoSparkReadTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach with SharedSparkContext {
 
   val DB = "spark_test_db"
   val COLLECTION = "spark_test_col"
   val arangoDB = new ArangoDB.Builder().build()
-  val conf = new SparkConf()
-    .setMaster("local")
-    .setAppName("ArangoSparkReadTest")
-    .set("arangodb.user", "root")
-    .set("arangodb.password", "")
-  val sc = new SparkContext(conf)
 
   override def beforeAll() {
+    super.beforeAll()
     try {
       arangoDB.db(DB).drop()
     } catch {
@@ -63,8 +58,12 @@ class ArangoSparkReadTest extends FunSuite with Matchers with BeforeAndAfterAll 
   }
 
   override def afterAll() {
-    arangoDB.db(DB).drop()
-    arangoDB.shutdown()
+    try {
+      arangoDB.db(DB).drop()
+      arangoDB.shutdown()
+    } finally {
+      super.afterAll()
+    }
   }
 
   test("load all documents from collection") {
