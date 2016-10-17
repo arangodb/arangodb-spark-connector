@@ -23,20 +23,18 @@
 package com.arangodb.spark
 
 import scala.collection.JavaConverters.seqAsJavaListConverter
+import scala.reflect.ClassTag
 
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.Row
 
-import com.arangodb.spark.vpack.VPackUtils
 import com.arangodb.spark.rdd.ArangoRDD
-import org.apache.spark.SparkContext
-import scala.reflect.ClassTag
+import com.arangodb.spark.vpack.VPackUtils
 
 object ArangoSpark {
-
-  private val InsertDocumentsBatchSize = 1024
 
   def save[T](rdd: RDD[T], collection: String): Unit =
     save(rdd, collection, WriteOptions())
