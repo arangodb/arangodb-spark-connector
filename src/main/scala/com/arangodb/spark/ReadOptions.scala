@@ -33,6 +33,20 @@ case class ReadOptions(override val database: String = "_system",
                        override val user: Option[String] = None,
                        override val password: Option[String] = None) extends ArangoOptions {
 
+  def this() = this(database = "_system")
+
+  def database(database: String): ReadOptions = copy(database = database)
+
+  def collection(collection: String): ReadOptions = copy(collection = collection)
+
+  def host(host: String): ReadOptions = copy(host = Some(host))
+
+  def port(port: Int): ReadOptions = copy(port = Some(port))
+
+  def user(user: String): ReadOptions = copy(user = Some(user))
+
+  def password(password: String): ReadOptions = copy(password = Some(password))
+
   def copy(database: String = database,
            collection: String = collection,
            partitioner: ArangoPartioner = partitioner,

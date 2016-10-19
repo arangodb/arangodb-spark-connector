@@ -82,7 +82,7 @@ class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll
   test("save RDD[VPackSlice] to ArangoDB") {
     checkDocumentCount(0)
 
-    val documents = sc.parallelize((1 to 100).map { i => new VPackBuilder().add(ValueType.OBJECT).add("test", java.lang.Integer.valueOf(i)).close().slice() })
+    val documents = sc.parallelize((1 to 100).map { i => new VPackBuilder().add(ValueType.OBJECT).add("test", Integer.valueOf(i)).close().slice() })
     ArangoSpark.save(documents, COLLECTION, WriteOptions(DB))
 
     checkDocumentCount(100)

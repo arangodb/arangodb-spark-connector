@@ -31,9 +31,7 @@ case class TestEntity(@BeanProperty var test: Int = Int.MaxValue,
                       @BeanProperty var longValue: Long = Long.MaxValue,
                       @BeanProperty var intValue: Int = Int.MaxValue,
                       @BeanProperty var shortValue: Short = Short.MaxValue,
-                      @BeanProperty var stringValue: String = "test",
-                      @BeanProperty var sqlDateValue: java.sql.Date = new java.sql.Date(1474988621),
-                      @BeanProperty var sqlTimestampValue: java.sql.Timestamp = new java.sql.Timestamp(1474988621)) {
+                      @BeanProperty var stringValue: String = "test") {
 
   def this() = this(test = Int.MaxValue)
 

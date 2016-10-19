@@ -28,6 +28,18 @@ case class WriteOptions(override val database: String = "_system",
                         override val user: Option[String] = None,
                         override val password: Option[String] = None) extends ArangoOptions {
 
+  def this() = this(database = "_system")
+
+  def database(database: String): WriteOptions = copy(database = database)
+
+  def host(host: String): WriteOptions = copy(host = Some(host))
+
+  def port(port: Int): WriteOptions = copy(port = Some(port))
+
+  def user(user: String): WriteOptions = copy(user = Some(user))
+
+  def password(password: String): WriteOptions = copy(password = Some(password))
+
   def copy(database: String = database,
            host: Option[String] = host,
            port: Option[Int] = port,

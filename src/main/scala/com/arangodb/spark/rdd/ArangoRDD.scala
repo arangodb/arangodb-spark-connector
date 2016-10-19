@@ -37,6 +37,7 @@ import com.arangodb.ArangoDB
 import org.apache.spark.launcher.SparkClassCommandBuilder
 import org.apache.spark.scheduler.SparkListener
 import com.arangodb.spark.rdd.partition.ArangoPartition
+import com.arangodb.spark.rdd.api.java.ArangoJavaRDD
 
 class ArangoRDD[T: ClassTag](
     @transient override val sparkContext: SparkContext,
@@ -53,5 +54,7 @@ class ArangoRDD[T: ClassTag](
 
   override def getPartitions: Array[Partition] =
     options.partitioner.createPartitions(options).asInstanceOf[Array[Partition]]
+
+  override def toJavaRDD(): ArangoJavaRDD[T] = new ArangoJavaRDD(this)
 
 }

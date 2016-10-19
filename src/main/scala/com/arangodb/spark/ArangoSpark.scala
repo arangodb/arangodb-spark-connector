@@ -33,6 +33,9 @@ import org.apache.spark.sql.Row
 
 import com.arangodb.spark.rdd.ArangoRDD
 import com.arangodb.spark.vpack.VPackUtils
+import com.arangodb.spark.rdd.api.java.ArangoJavaRDD
+import org.apache.spark.api.java.JavaSparkContext
+import org.apache.spark.api.java.JavaRDD
 
 object ArangoSpark {
 
@@ -41,6 +44,12 @@ object ArangoSpark {
 
   def save[T](rdd: RDD[T], collection: String, options: WriteOptions): Unit =
     saveIntern(rdd, collection, options, (x: Iterator[T]) => x)
+
+  def save[T](rdd: JavaRDD[T], collection: String, options: WriteOptions): Unit =
+    saveIntern(rdd.rdd, collection, options, (x: Iterator[T]) => x)
+
+  def save[T](rdd: JavaRDD[T], collection: String): Unit =
+    saveIntern(rdd.rdd, collection, WriteOptions(), (x: Iterator[T]) => x)
 
   def save[T](dataset: Dataset[T], collection: String): Unit =
     save(dataset, collection, WriteOptions())
@@ -71,5 +80,14 @@ object ArangoSpark {
 
   def load[T: ClassTag](sparkContext: SparkContext, collection: String, options: ReadOptions): ArangoRDD[T] =
     new ArangoRDD[T](sparkContext, createReadOptions(options, sparkContext.getConf).copy(collection = collection))
+
+  def load[T](sparkContext: JavaSparkContext, collection: String, clazz: Class[T]): ArangoJavaRDD[T] = {
+    return load(sparkContext, collection, ReadOptions(), clazz)
+  }
+
+  def load[T](sparkContext: JavaSparkContext, collection: String, options: ReadOptions, clazz: Class[T]): ArangoJavaRDD[T] = {
+    implicit val classtag: ClassTag[T] = ClassTag(clazz)
+    return load(sparkContext.sc, collection, options).toJavaRDD()
+  }
 
 }
