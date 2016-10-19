@@ -39,27 +39,79 @@ import org.apache.spark.api.java.JavaRDD
 
 object ArangoSpark {
 
+  /**
+   * Save data from rdd into ArangoDB
+   *
+   * @param rdd the rdd with the data to save
+   * @param collection the collection to save in
+   */
   def save[T](rdd: RDD[T], collection: String): Unit =
     save(rdd, collection, WriteOptions())
 
+  /**
+   * Save data from rdd into ArangoDB
+   *
+   * @param rdd the rdd with the data to save
+   * @param collection the collection to save in
+   * @param options additional write options
+   */
   def save[T](rdd: RDD[T], collection: String, options: WriteOptions): Unit =
     saveIntern(rdd, collection, options, (x: Iterator[T]) => x)
 
-  def save[T](rdd: JavaRDD[T], collection: String, options: WriteOptions): Unit =
-    saveIntern(rdd.rdd, collection, options, (x: Iterator[T]) => x)
-
+  /**
+   * Save data from rdd into ArangoDB
+   *
+   * @param rdd the rdd with the data to save
+   * @param collection the collection to save in
+   */
   def save[T](rdd: JavaRDD[T], collection: String): Unit =
     saveIntern(rdd.rdd, collection, WriteOptions(), (x: Iterator[T]) => x)
 
+  /**
+   * Save data from rdd into ArangoDB
+   *
+   * @param rdd the rdd with the data to save
+   * @param collection the collection to save in
+   * @param options additional write options
+   */
+  def save[T](rdd: JavaRDD[T], collection: String, options: WriteOptions): Unit =
+    saveIntern(rdd.rdd, collection, options, (x: Iterator[T]) => x)
+
+  /**
+   * Save data from dataset into ArangoDB
+   *
+   * @param dataset the dataset with data to save
+   * @param collection the collection to save in
+   */
   def save[T](dataset: Dataset[T], collection: String): Unit =
     save(dataset, collection, WriteOptions())
 
+  /**
+   * Save data from dataset into ArangoDB
+   *
+   * @param dataset the dataset with data to save
+   * @param collection the collection to save in
+   * @param options additional write options
+   */
   def save[T](dataset: Dataset[T], collection: String, options: WriteOptions): Unit =
     save(dataset.toDF(), collection, options)
 
+  /**
+   * Save data from dataframe into ArangoDB
+   *
+   * @param dataframe the dataframe with data to save
+   * @param collection the collection to save in
+   */
   def save(dataframe: DataFrame, collection: String): Unit =
     save(dataframe, collection, WriteOptions())
 
+  /**
+   * Save data from dataframe into ArangoDB
+   *
+   * @param dataframe the dataframe with data to save
+   * @param collection the collection to save in
+   * @param options additional write options
+   */
   def save(dataframe: DataFrame, collection: String, options: WriteOptions): Unit =
     saveIntern[Row](dataframe.rdd, collection, options, (x: Iterator[Row]) => x.map { y => VPackUtils.rowToVPack(y) })
 
@@ -75,16 +127,43 @@ object ArangoSpark {
     }
   }
 
+  /**
+   * Load data from ArangoDB into rdd
+   *
+   * @param sparkContext the sparkContext containing the ArangoDB configuration
+   * @param collection the collection to load data from
+   */
   def load[T: ClassTag](sparkContext: SparkContext, collection: String): ArangoRDD[T] =
     load(sparkContext, collection, ReadOptions())
 
+  /**
+   * Load data from ArangoDB into rdd
+   *
+   * @param sparkContext the sparkContext containing the ArangoDB configuration
+   * @param collection the collection to load data from
+   * @param additional read options
+   */
   def load[T: ClassTag](sparkContext: SparkContext, collection: String, options: ReadOptions): ArangoRDD[T] =
     new ArangoRDD[T](sparkContext, createReadOptions(options, sparkContext.getConf).copy(collection = collection))
 
+  /**
+   * Load data from ArangoDB into rdd
+   *
+   * @param sparkContext the sparkContext containing the ArangoDB configuration
+   * @param collection the collection to load data from
+   * @param additional read options
+   */
   def load[T](sparkContext: JavaSparkContext, collection: String, clazz: Class[T]): ArangoJavaRDD[T] = {
     return load(sparkContext, collection, ReadOptions(), clazz)
   }
 
+  /**
+   * Load data from ArangoDB into rdd
+   *
+   * @param sparkContext the sparkContext containing the ArangoDB configuration
+   * @param collection the collection to load data from
+   * @param additional read options
+   */
   def load[T](sparkContext: JavaSparkContext, collection: String, options: ReadOptions, clazz: Class[T]): ArangoJavaRDD[T] = {
     implicit val classtag: ClassTag[T] = ClassTag(clazz)
     return load(sparkContext.sc, collection, options).toJavaRDD()
