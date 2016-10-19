@@ -10,20 +10,59 @@
 <tr><td>0.1.x</td><td>4.0.x</td><td>3.1.x</td></tr>
 </table>
 
-## Maven, SBT
+## Maven
 
-TODO
+```XML
+<dependencies>
+  <dependency>
+    <groupId>com.arangodb</groupId>
+    <artifactId>arangodb-spark-connector</artifactId>
+    <version>1.0.0-beta1</version>
+  </dependency>
+	....
+</dependencies>
+```
 
 ## Learn more
 
-### load data from ArangoDB as RDD
+### Setup SparkContext
+Scala
 ```Scala
-val rdd = ArangoSpark.load[MyBean](sc, "myCollection", ReadOptions())
+val conf = new SparkConf()
+    .set("arangodb.host", "127.0.0.1")
+    .set("arangodb.port", "8529")
+    .set("arangodb.user", "myUser")
+    .set("arangodb.password", "myPassword")
+    ...
+    
+val sc = new SparkContext(conf)
+```
+Java
+```Java
+SparkConf conf = new SparkConf()
+    .set("arangodb.host", "127.0.0.1")
+    .set("arangodb.port", "8529")
+    .set("arangodb.user", "myUser")
+    .set("arangodb.password", "myPassword")
+    ...
+    
+JavaSparkContext sc = new JavaSparkContext(conf)
+```
+
+### Load data from ArangoDB
+Scala
+```Scala
+val rdd = ArangoSpark.load[MyBean](sc, "myCollection")
+
+```
+Java
+```Java
+ArangoJavaRDD<MyBean> rdd = ArangoSpark.load(sc, "myCollection", MyBean.class);
 
 ```
 
-### save data (RDD, Dataframe or Dataset) to ArangoDB
+### Save data (RDD, Dataframe or Dataset) to ArangoDB
 ```Scala
-ArangoSpark.save(rdd, "myCollection", WriteOptions())
+ArangoSpark.save(rdd, "myCollection")
 
 ```
