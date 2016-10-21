@@ -43,10 +43,10 @@ SparkConf conf = new SparkConf()
     .set("arangodb.host", "127.0.0.1")
     .set("arangodb.port", "8529")
     .set("arangodb.user", "myUser")
-    .set("arangodb.password", "myPassword")
+    .set("arangodb.password", "myPassword");
     ...
     
-JavaSparkContext sc = new JavaSparkContext(conf)
+JavaSparkContext sc = new JavaSparkContext(conf);
 ```
 
 ### Load data from ArangoDB
