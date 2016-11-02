@@ -7,7 +7,8 @@
 
 <table>
 <tr><th>arangodb-spark-connector</th><th>arangodb-java-driver</th><th>ArangoDB</th></tr>
-<tr><td>1.0.0-beta1</td><td>4.0.x</td><td>3.1.x</td></tr>
+<tr><td>1.0.0-beta1</td><td>4.0.x</td><td>3.1.rc1 to 3.1.rc3</td></tr>
+<tr><td>1.0.0-beta2</td><td>4.1.x</td><td>3.1.x</td></tr>
 </table>
 
 ## Maven
@@ -17,7 +18,7 @@
   <dependency>
     <groupId>com.arangodb</groupId>
     <artifactId>arangodb-spark-connector</artifactId>
-    <version>1.0.0-beta1</version>
+    <version>1.0.0-beta2</version>
   </dependency>
 	....
 </dependencies>
