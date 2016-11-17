@@ -56,7 +56,7 @@ object ArangoSpark {
    * @param options additional write options
    */
   def save[T](rdd: RDD[T], collection: String, options: WriteOptions): Unit =
-    saveIntern(rdd, collection, options, (x: Iterator[T]) => x)
+    saveRDD(rdd, collection, options, (x: Iterator[T]) => x)
 
   /**
    * Save data from rdd into ArangoDB
@@ -65,7 +65,7 @@ object ArangoSpark {
    * @param collection the collection to save in
    */
   def save[T](rdd: JavaRDD[T], collection: String): Unit =
-    saveIntern(rdd.rdd, collection, WriteOptions(), (x: Iterator[T]) => x)
+    saveRDD(rdd.rdd, collection, WriteOptions(), (x: Iterator[T]) => x)
 
   /**
    * Save data from rdd into ArangoDB
@@ -75,7 +75,7 @@ object ArangoSpark {
    * @param options additional write options
    */
   def save[T](rdd: JavaRDD[T], collection: String, options: WriteOptions): Unit =
-    saveIntern(rdd.rdd, collection, options, (x: Iterator[T]) => x)
+    saveRDD(rdd.rdd, collection, options, (x: Iterator[T]) => x)
 
   /**
    * Save data from dataset into ArangoDB
@@ -84,7 +84,7 @@ object ArangoSpark {
    * @param collection the collection to save in
    */
   def save[T](dataset: Dataset[T], collection: String): Unit =
-    save(dataset, collection, WriteOptions())
+    saveDF(dataset.toDF(), collection, WriteOptions())
 
   /**
    * Save data from dataset into ArangoDB
@@ -94,16 +94,7 @@ object ArangoSpark {
    * @param options additional write options
    */
   def save[T](dataset: Dataset[T], collection: String, options: WriteOptions): Unit =
-    save(dataset.toDF(), collection, options)
-
-  /**
-   * Save data from dataframe into ArangoDB
-   *
-   * @param dataframe the dataframe with data to save
-   * @param collection the collection to save in
-   */
-  def save(dataframe: DataFrame, collection: String): Unit =
-    save(dataframe, collection, WriteOptions())
+    saveDF(dataset.toDF(), collection, options)
 
   /**
    * Save data from dataframe into ArangoDB
@@ -112,10 +103,20 @@ object ArangoSpark {
    * @param collection the collection to save in
    * @param options additional write options
    */
-  def save(dataframe: DataFrame, collection: String, options: WriteOptions): Unit =
-    saveIntern[Row](dataframe.rdd, collection, options, (x: Iterator[Row]) => x.map { y => VPackUtils.rowToVPack(y) })
+  def saveDF(dataframe: DataFrame, collection: String): Unit =
+    saveRDD[Row](dataframe.rdd, collection, WriteOptions(), (x: Iterator[Row]) => x.map { y => VPackUtils.rowToVPack(y) })
 
-  private def saveIntern[T](rdd: RDD[T], collection: String, options: WriteOptions, map: Iterator[T] => Iterator[Any]): Unit = {
+  /**
+   * Save data from dataframe into ArangoDB
+   *
+   * @param dataframe the dataframe with data to save
+   * @param collection the collection to save in
+   * @param options additional write options
+   */
+  def saveDF(dataframe: DataFrame, collection: String, options: WriteOptions): Unit =
+    saveRDD[Row](dataframe.rdd, collection, options, (x: Iterator[Row]) => x.map { y => VPackUtils.rowToVPack(y) })
+
+  private def saveRDD[T](rdd: RDD[T], collection: String, options: WriteOptions, map: Iterator[T] => Iterator[Any]): Unit = {
     val writeOptions = createWriteOptions(options, rdd.sparkContext.getConf)
     rdd.foreachPartition { p =>
       if (p.nonEmpty) {

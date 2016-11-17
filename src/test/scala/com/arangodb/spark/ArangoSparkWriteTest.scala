@@ -94,7 +94,7 @@ class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll
     val documents = sc.parallelize((1 to 100).map { i => TestEntity(i) })
     val sql: SQLContext = SQLContext.getOrCreate(sc);
     val df = sql.createDataFrame(documents, classOf[TestEntity])
-    ArangoSpark.save(df, COLLECTION, WriteOptions(DB))
+    ArangoSpark.saveDF(df, COLLECTION, WriteOptions(DB))
 
     checkDocumentCount(100)
   }
