@@ -23,15 +23,15 @@
 package com.arangodb.spark.rdd.partition
 
 import com.arangodb.spark.ReadOptions
+import com.arangodb.spark._
+import com.arangodb.velocystream.Request
+import com.arangodb.velocystream.RequestType
 
-trait ArangoPartioner extends Serializable {
+trait ArangoPartitioner extends Serializable {
 
   def createPartitions(options: ReadOptions): Array[ArangoPartition]
 
-  def createPartition(index: Int, numPartitions: Int, options: ReadOptions): ArangoPartition = {
-    val query = s"FOR i IN @@col FILTER HASH(i._key) % @numPartitions == @partitionIndex RETURN i"
-    var bindVars = Map[String, Object]("@col" -> options.collection, "numPartitions" -> Int.box(numPartitions), "partitionIndex" -> Int.box(index))
-    ArangoPartition(index, options, query, bindVars)
-  }
+  def createPartition(index: Int, shardIds: Array[String], options: ReadOptions): ArangoPartition =
+    ArangoPartition(index, options, "FOR doc IN @@col RETURN doc", Map[String, Object]("@col" -> options.collection), QueryOptions(shardIds))
 
 }

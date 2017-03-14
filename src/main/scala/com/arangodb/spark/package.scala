@@ -28,27 +28,36 @@ package object spark {
 
   private[spark] def createReadOptions(options: ReadOptions, sc: SparkConf): ReadOptions = {
     options.copy(
-      host = options.host.orElse(Some(sc.get("arangodb.host", null))),
-      port = options.port.orElse(if (sc.contains("arangodb.port")) Some(sc.get("arangodb.port").toInt) else None),
-      user = options.user.orElse(Some(sc.get("arangodb.user", null))),
-      password = options.password.orElse(Some(sc.get("arangodb.password", null))))
+      hosts = options.hosts.orElse(some(sc.get("arangodb.hosts", null))),
+      user = options.user.orElse(some(sc.get("arangodb.user", null))),
+      password = options.password.orElse(some(sc.get("arangodb.password", null))))
   }
 
   private[spark] def createWriteOptions(options: WriteOptions, sc: SparkConf): WriteOptions = {
     options.copy(
-      host = options.host.orElse(Some(sc.get("arangodb.host", null))),
-      port = options.port.orElse(if (sc.contains("arangodb.port")) Some(sc.get("arangodb.port").toInt) else None),
-      user = options.user.orElse(Some(sc.get("arangodb.user", null))),
-      password = options.password.orElse(Some(sc.get("arangodb.password", null))))
+      hosts = options.hosts.orElse(some(sc.get("arangodb.hosts", null))),
+      user = options.user.orElse(some(sc.get("arangodb.user", null))),
+      password = options.password.orElse(some(sc.get("arangodb.password", null))))
   }
 
   private[spark] def createArangoBuilder(options: ArangoOptions): ArangoDB.Builder = {
     val builder = new ArangoDB.Builder()
-    options.host.foreach { builder.host(_) }
-    options.port.foreach { builder.port(_) }
+    options.hosts.foreach { hosts(_).foreach(host => builder.host(host._1, host._2)) }
     options.user.foreach { builder.user(_) }
     options.password.foreach { builder.password(_) }
     builder
   }
+
+  private def some(value: String): Option[String] =
+    if (value != null) Some(value) else None
+
+  private def hosts(hosts: String): List[(String, Int)] =
+    hosts.split(",").map({ x =>
+      val s = x.split(":")
+      if (s.length != 2 || !s(1).matches("[0-9]+"))
+        throw new ArangoDBException(s"Could not load property-value arangodb.hosts=${s}. Expected format ip:port,ip:port,...");
+      else
+        (s(0), s(1).toInt)
+    }).toList
 
 }

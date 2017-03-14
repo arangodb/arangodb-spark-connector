@@ -23,8 +23,7 @@
 package com.arangodb.spark
 
 case class WriteOptions(override val database: String = "_system",
-                        override val host: Option[String] = None,
-                        override val port: Option[Int] = None,
+                        override val hosts: Option[String] = None,
                         override val user: Option[String] = None,
                         override val password: Option[String] = None) extends ArangoOptions {
 
@@ -32,20 +31,17 @@ case class WriteOptions(override val database: String = "_system",
 
   def database(database: String): WriteOptions = copy(database = database)
 
-  def host(host: String): WriteOptions = copy(host = Some(host))
-
-  def port(port: Int): WriteOptions = copy(port = Some(port))
+  def hosts(hosts: String): WriteOptions = copy(hosts = Some(hosts))
 
   def user(user: String): WriteOptions = copy(user = Some(user))
 
   def password(password: String): WriteOptions = copy(password = Some(password))
 
   def copy(database: String = database,
-           host: Option[String] = host,
-           port: Option[Int] = port,
+           hosts: Option[String] = hosts,
            user: Option[String] = user,
            password: Option[String] = password): WriteOptions = {
-    WriteOptions(database, host, port, user, password)
+    WriteOptions(database, hosts, user, password)
   }
 
 }

@@ -36,7 +36,7 @@ import com.arangodb.ArangoDBException
 import com.arangodb.velocypack.VPackBuilder
 import com.arangodb.velocypack.ValueType
 import scala.reflect.ClassTag
-import com.arangodb.spark.rdd.partition.ArangoPartitionerByPartitionCount
+import com.arangodb.spark.rdd.partition.ArangoPartitionerSinglePartition
 
 class ArangoSparkReadTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach with SharedSparkContext {
 
@@ -72,7 +72,7 @@ class ArangoSparkReadTest extends FunSuite with Matchers with BeforeAndAfterAll 
   }
 
   test("load with custom partionier") {
-    val rdd = ArangoSpark.load[TestEntity](sc, COLLECTION, ReadOptions(DB, partitioner = new ArangoPartitionerByPartitionCount(1)))
+    val rdd = ArangoSpark.load[TestEntity](sc, COLLECTION, ReadOptions(DB, partitioner = new ArangoPartitionerSinglePartition()))
     rdd.count() should be(100)
   }
 }

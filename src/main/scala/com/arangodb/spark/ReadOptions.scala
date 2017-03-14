@@ -22,14 +22,14 @@
 
 package com.arangodb.spark
 
-import com.arangodb.spark.rdd.partition.ArangoPartioner
 import com.arangodb.spark.rdd.partition.ArangoDefaultPartitioner
+import com.arangodb.spark.rdd.partition.ArangoPartitioner
+import com.arangodb.internal.velocystream.Host
 
 case class ReadOptions(override val database: String = "_system",
                        val collection: String = null,
-                       val partitioner: ArangoPartioner = new ArangoDefaultPartitioner(),
-                       override val host: Option[String] = None,
-                       override val port: Option[Int] = None,
+                       val partitioner: ArangoPartitioner = new ArangoDefaultPartitioner(),
+                       override val hosts: Option[String] = None,
                        override val user: Option[String] = None,
                        override val password: Option[String] = None) extends ArangoOptions {
 
@@ -39,9 +39,7 @@ case class ReadOptions(override val database: String = "_system",
 
   def collection(collection: String): ReadOptions = copy(collection = collection)
 
-  def host(host: String): ReadOptions = copy(host = Some(host))
-
-  def port(port: Int): ReadOptions = copy(port = Some(port))
+  def hosts(hosts: String): ReadOptions = copy(hosts = Some(hosts))
 
   def user(user: String): ReadOptions = copy(user = Some(user))
 
@@ -49,12 +47,11 @@ case class ReadOptions(override val database: String = "_system",
 
   def copy(database: String = database,
            collection: String = collection,
-           partitioner: ArangoPartioner = partitioner,
-           host: Option[String] = host,
-           port: Option[Int] = port,
+           partitioner: ArangoPartitioner = partitioner,
+           hosts: Option[String] = hosts,
            user: Option[String] = user,
            password: Option[String] = password): ReadOptions = {
-    ReadOptions(database, collection, partitioner, host, port, user, password)
+    ReadOptions(database, collection, partitioner, hosts, user, password)
   }
 
 }
