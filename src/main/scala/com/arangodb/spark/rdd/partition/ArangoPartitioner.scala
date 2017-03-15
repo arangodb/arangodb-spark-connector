@@ -32,6 +32,6 @@ trait ArangoPartitioner extends Serializable {
   def createPartitions(options: ReadOptions): Array[ArangoPartition]
 
   def createPartition(index: Int, shardIds: Array[String], options: ReadOptions): ArangoPartition =
-    ArangoPartition(index, options, "FOR doc IN @@col RETURN doc", Map[String, Object]("@col" -> options.collection), QueryOptions(shardIds))
+    ArangoPartition(index, options, Map[String, Object]("@col" -> options.collection), QueryOptions(shardIds))
 
 }

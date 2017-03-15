@@ -23,9 +23,9 @@
 package com.arangodb.spark.rdd.partition
 
 import org.apache.spark.Partition
-import com.arangodb.spark.ReadOptions
-import com.arangodb.spark.rdd.partition.QueryOptions
 
-case class ArangoPartition(index: Int, options: ReadOptions, query: String, bindVars: Map[String, Object], queryOptions: QueryOptions) extends Partition {
+import com.arangodb.spark.ReadOptions
+
+case class ArangoPartition(index: Int, options: ReadOptions, bindVars: Map[String, Object], queryOptions: QueryOptions) extends Partition {
 
 }

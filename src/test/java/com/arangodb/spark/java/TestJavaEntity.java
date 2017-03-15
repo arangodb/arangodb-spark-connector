@@ -6,6 +6,7 @@ public class TestJavaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 2886378075044424343L;
 	
+	private int test = Integer.MAX_VALUE;
 	private Boolean booleanValue = true;
 	private Double doubleValue = Double.MAX_VALUE;
 	private Float floatValue = Float.MAX_VALUE;
@@ -16,6 +17,19 @@ public class TestJavaEntity implements Serializable {
 
 	public TestJavaEntity() {
 		super();
+	}
+	
+	public TestJavaEntity(int test) {
+		super();
+		this.test = test;
+	}
+
+	public int getTest() {
+		return test;
+	}
+
+	public void setTest(int test) {
+		this.test = test;
 	}
 
 	public Boolean getBooleanValue() {

@@ -39,8 +39,8 @@ public class ArangoSparkJavaReadTest {
 		arangoDB.createDatabase(DB);
 		arangoDB.db(DB).createCollection(COLLECTION);
 		Collection<TestJavaEntity> docs = new ArrayList<>();
-		for (int i = 0; i < 100; i++) {
-			docs.add(new TestJavaEntity());
+		for (int i = 1; i <= 100; i++) {
+			docs.add(new TestJavaEntity(i));
 		}
 		arangoDB.db(DB).collection(COLLECTION).insertDocuments(docs);
 	}
@@ -56,6 +56,13 @@ public class ArangoSparkJavaReadTest {
 	public void loadAll() {
 		ArangoJavaRDD<TestJavaEntity> rdd = ArangoSpark.load(sc, COLLECTION, new ReadOptions().database(DB), TestJavaEntity.class);
 		assertThat(rdd.count(), is(100L));
+	}
+	
+	@Test
+	public void loadWithFilterStatement() {
+		ArangoJavaRDD<TestJavaEntity> rdd = ArangoSpark.load(sc, COLLECTION, new ReadOptions().database(DB), TestJavaEntity.class);
+		ArangoJavaRDD<TestJavaEntity> rdd2 = rdd.filter("doc.test <= 50");
+		assertThat(rdd2.count(), is(50L));
 	}
 
 }

@@ -7,8 +7,7 @@
 
 <table>
 <tr><th>arangodb-spark-connector</th><th>arangodb-java-driver</th><th>ArangoDB</th></tr>
-<tr><td>1.0.0-beta1</td><td>4.0.x</td><td>3.1.rc1 to 3.1.rc3</td></tr>
-<tr><td>1.0.0-beta2</td><td>4.1.x</td><td>3.1.x</td></tr>
+<tr><td>1.0.0</td><td>4.1.10</td><td>3.1.x</td></tr>
 </table>
 
 ## Maven
@@ -18,7 +17,7 @@
   <dependency>
     <groupId>com.arangodb</groupId>
     <artifactId>arangodb-spark-connector</artifactId>
-    <version>1.0.0-beta2</version>
+    <version>1.0.0</version>
   </dependency>
 	....
 </dependencies>
@@ -30,8 +29,7 @@
 Scala
 ```Scala
 val conf = new SparkConf()
-    .set("arangodb.host", "127.0.0.1")
-    .set("arangodb.port", "8529")
+    .set("arangodb.hosts", "127.0.0.1:8529")
     .set("arangodb.user", "myUser")
     .set("arangodb.password", "myPassword")
     ...
@@ -41,8 +39,7 @@ val sc = new SparkContext(conf)
 Java
 ```Java
 SparkConf conf = new SparkConf()
-    .set("arangodb.host", "127.0.0.1")
-    .set("arangodb.port", "8529")
+    .set("arangodb.hosts", "127.0.0.1:8529")
     .set("arangodb.user", "myUser")
     .set("arangodb.password", "myPassword");
     ...
@@ -59,6 +56,18 @@ val rdd = ArangoSpark.load[MyBean](sc, "myCollection")
 Java
 ```Java
 ArangoJavaRDD<MyBean> rdd = ArangoSpark.load(sc, "myCollection", MyBean.class);
+
+```
+
+### Load data from ArangoDB with server-side filtering
+Scala
+```Scala
+val rdd = ArangoSpark.load[MyBean](sc, "myCollection").filter("doc.name == 'John'")
+
+```
+Java
+```Java
+ArangoJavaRDD<MyBean> rdd = ArangoSpark.load(sc, "myCollection", MyBean.class).filter("doc.name == 'John'");
 
 ```
 
