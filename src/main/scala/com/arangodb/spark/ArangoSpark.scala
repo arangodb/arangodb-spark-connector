@@ -84,7 +84,7 @@ object ArangoSpark {
    * @param collection the collection to save in
    */
   def save[T](dataset: Dataset[T], collection: String): Unit =
-    saveDF(dataset.toDF(), collection, WriteOptions())
+    saveRDD(dataset.rdd, collection, WriteOptions(), (x: Iterator[T]) => x)
 
   /**
    * Save data from dataset into ArangoDB
@@ -94,7 +94,7 @@ object ArangoSpark {
    * @param options additional write options
    */
   def save[T](dataset: Dataset[T], collection: String, options: WriteOptions): Unit =
-    saveDF(dataset.toDF(), collection, options)
+    saveRDD(dataset.rdd, collection, options, (x: Iterator[T]) => x)
 
   /**
    * Save data from dataframe into ArangoDB
