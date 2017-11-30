@@ -24,14 +24,20 @@ package com.arangodb.spark
 
 import com.arangodb.spark.rdd.partition.ArangoDefaultPartitioner
 import com.arangodb.spark.rdd.partition.ArangoPartitioner
-import com.arangodb.internal.velocystream.Host
+
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLProtocolException
 
 case class ReadOptions(override val database: String = "_system",
                        val collection: String = null,
                        val partitioner: ArangoPartitioner = new ArangoDefaultPartitioner(),
                        override val hosts: Option[String] = None,
                        override val user: Option[String] = None,
-                       override val password: Option[String] = None) extends ArangoOptions {
+                       override val password: Option[String] = None,
+                       override val useSsl: Option[Boolean] = None,
+                       override val sslKeyStoreFile: Option[String] = None,
+                       override val sslPassPhrase: Option[String] = None,
+                       override val sslProtocol: Option[String] = None) extends ArangoOptions {
 
   def this() = this(database = "_system")
 
@@ -45,13 +51,25 @@ case class ReadOptions(override val database: String = "_system",
 
   def password(password: String): ReadOptions = copy(password = Some(password))
 
+  def useSsl(useSsl: Boolean): ReadOptions = copy(useSsl = Some(useSsl))
+
+  def sslKeyStoreFile(sslKeyStoreFile: String): ReadOptions = copy(sslKeyStoreFile = Some(sslKeyStoreFile))
+
+  def sslPassPhrase(sslPassPhrase: String): ReadOptions = copy(sslPassPhrase = Some(sslPassPhrase))
+
+  def sslProtocol(sslProtocol: String): ReadOptions = copy(sslProtocol = Some(sslProtocol))
+
   def copy(database: String = database,
            collection: String = collection,
            partitioner: ArangoPartitioner = partitioner,
            hosts: Option[String] = hosts,
            user: Option[String] = user,
-           password: Option[String] = password): ReadOptions = {
-    ReadOptions(database, collection, partitioner, hosts, user, password)
+           password: Option[String] = password,
+           useSsl: Option[Boolean] = useSsl,
+           sslKeyStoreFile: Option[String] = sslKeyStoreFile,
+           sslPassPhrase: Option[String] = sslPassPhrase,
+           sslProtocol: Option[String] = sslProtocol): ReadOptions = {
+    ReadOptions(database, collection, partitioner, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol)
   }
 
 }

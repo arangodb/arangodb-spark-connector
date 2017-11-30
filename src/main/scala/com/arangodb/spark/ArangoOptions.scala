@@ -1,6 +1,6 @@
 package com.arangodb.spark
 
-import com.arangodb.internal.velocystream.Host
+import javax.net.ssl.SSLContext
 
 trait ArangoOptions {
 
@@ -11,5 +11,13 @@ trait ArangoOptions {
   def user: Option[String] = None
 
   def password: Option[String] = None
+
+  def useSsl: Option[Boolean] = None
+
+  def sslKeyStoreFile: Option[String] = None
+
+  def sslPassPhrase: Option[String] = None
+
+  def sslProtocol: Option[String] = None
 
 }

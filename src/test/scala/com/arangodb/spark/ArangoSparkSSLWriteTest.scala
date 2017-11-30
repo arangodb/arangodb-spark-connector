@@ -36,7 +36,7 @@ import com.arangodb.ArangoDBException
 import com.arangodb.velocypack.VPackBuilder
 import com.arangodb.velocypack.ValueType
 
-class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach with SharedSparkContext {
+class ArangoSparkSSLWriteTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach with SharedSparkContextSSL {
 
   val DB = "spark_test_db"
   val COLLECTION = "spark_test_col"
@@ -107,17 +107,6 @@ class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll
     val encoder = ExpressionEncoder.javaBean(classOf[TestEntity])
     val ds = sql.createDataset(documents)(encoder);
     ArangoSpark.save(ds, COLLECTION, WriteOptions(DB))
-
-    checkDocumentCount(100)
-  }
-
-  test("save with SSL") {
-    checkDocumentCount(0)
-
-    val documents = sc.parallelize((1 to 100).map { i => TestEntity(i) })
-    val keyStore = this.getClass().getResource("/example.truststore").getFile()
-    ArangoSpark.save(documents, COLLECTION, WriteOptions(DB).hosts("127.0.0.1:8530")
-      .useSsl(true).sslKeyStoreFile(keyStore).sslPassPhrase("12345678"))
 
     checkDocumentCount(100)
   }

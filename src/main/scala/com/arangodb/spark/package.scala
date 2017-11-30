@@ -22,22 +22,47 @@
 
 package com.arangodb
 
+import scala.util.Try
+
 import org.apache.spark.SparkConf
+import java.security.KeyStore
+import javax.net.ssl.KeyManagerFactory
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
+import java.io.FileInputStream
+import com.arangodb.velocypack.module.jdk8.VPackJdk8Module
+import com.arangodb.velocypack.module.scala.VPackScalaModule
 
 package object spark {
 
+  val PropertyHosts = "arangodb.hosts"
+  val PropertyUser = "arangodb.user"
+  val PropertyPassword = "arangodb.password"
+  val PropertyUseSsl = "arangodb.useSsl"
+  val PropertySslKeyStoreFile = "arangodb.ssl.keyStoreFile"
+  val PropertySslPassPhrase = "arangodb.ssl.passPhrase"
+  val PropertySslProtocol = "arangodb.ssl.protocol"
+
   private[spark] def createReadOptions(options: ReadOptions, sc: SparkConf): ReadOptions = {
     options.copy(
-      hosts = options.hosts.orElse(some(sc.get("arangodb.hosts", null))),
-      user = options.user.orElse(some(sc.get("arangodb.user", null))),
-      password = options.password.orElse(some(sc.get("arangodb.password", null))))
+      hosts = options.hosts.orElse(some(sc.get(PropertyHosts, null))),
+      user = options.user.orElse(some(sc.get(PropertyUser, null))),
+      password = options.password.orElse(some(sc.get(PropertyPassword, null))),
+      useSsl = options.useSsl.orElse(some(Try(sc.get(PropertyUseSsl, null).toBoolean).getOrElse(false))),
+      sslKeyStoreFile = options.sslKeyStoreFile.orElse(some(sc.get(PropertySslKeyStoreFile, null))),
+      sslPassPhrase = options.sslPassPhrase.orElse(some(sc.get(PropertySslPassPhrase, null))),
+      sslProtocol = options.sslProtocol.orElse(some(sc.get(PropertySslProtocol, null))))
   }
 
   private[spark] def createWriteOptions(options: WriteOptions, sc: SparkConf): WriteOptions = {
     options.copy(
-      hosts = options.hosts.orElse(some(sc.get("arangodb.hosts", null))),
-      user = options.user.orElse(some(sc.get("arangodb.user", null))),
-      password = options.password.orElse(some(sc.get("arangodb.password", null))))
+      hosts = options.hosts.orElse(some(sc.get(PropertyHosts, null))),
+      user = options.user.orElse(some(sc.get(PropertyUser, null))),
+      password = options.password.orElse(some(sc.get(PropertyPassword, null))),
+      useSsl = options.useSsl.orElse(some(Try(sc.get(PropertyUseSsl, null).toBoolean).getOrElse(false))),
+      sslKeyStoreFile = options.sslKeyStoreFile.orElse(some(sc.get(PropertySslKeyStoreFile, null))),
+      sslPassPhrase = options.sslPassPhrase.orElse(some(sc.get(PropertySslPassPhrase, null))),
+      sslProtocol = options.sslProtocol.orElse(some(sc.get(PropertySslProtocol, null))))
   }
 
   private[spark] def createArangoBuilder(options: ArangoOptions): ArangoDB.Builder = {
@@ -45,11 +70,30 @@ package object spark {
     options.hosts.foreach { hosts(_).foreach(host => builder.host(host._1, host._2)) }
     options.user.foreach { builder.user(_) }
     options.password.foreach { builder.password(_) }
+    options.useSsl.foreach { builder.useSsl(_) }
+    if (options.sslKeyStoreFile.isDefined && options.sslPassPhrase.isDefined) {
+      builder.sslContext(createSslContext(options.sslKeyStoreFile.get, options.sslPassPhrase.get, options.sslProtocol.getOrElse("TLS")))
+    }
     builder
+  }
+
+  private def createSslContext(keyStoreFile: String, passPhrase: String, protocol: String): SSLContext = {
+    val ks = KeyStore.getInstance(KeyStore.getDefaultType());
+    val kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+    ks.load(new FileInputStream(keyStoreFile), passPhrase.toCharArray());
+    kmf.init(ks, passPhrase.toCharArray());
+    val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+    tmf.init(ks);
+    val sc = SSLContext.getInstance(protocol);
+    sc.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+    sc
   }
 
   private def some(value: String): Option[String] =
     if (value != null) Some(value) else None
+
+  private def some(value: Boolean): Option[Boolean] =
+    Some(value)
 
   private def hosts(hosts: String): List[(String, Int)] =
     hosts.split(",").map({ x =>

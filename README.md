@@ -1,16 +1,6 @@
-
 ![ArangoDB-Logo](https://docs.arangodb.com/assets/arangodb_logo_2016_inverted.png)
 
 # arangodb-spark-connector
-
-## Supported versions
-
-<table>
-<tr><th>arangodb-spark-connector</th><th>arangodb-java-driver</th><th>ArangoDB</th></tr>
-<tr><td>1.0.0-beta1</td><td>4.0.x</td><td>3.1.rc1 to 3.1.rc3</td></tr>
-<tr><td>1.0.0-beta2</td><td>4.1.x</td><td>3.1.x</td></tr>
-<tr><td>1.0.0</td><td>4.1.10</td><td>3.2.0</td></tr>
-</table>
 
 ## Maven
 
@@ -19,13 +9,31 @@
   <dependency>
     <groupId>com.arangodb</groupId>
     <artifactId>arangodb-spark-connector</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
   </dependency>
 	....
 </dependencies>
 ```
 
+## SBT
+
+```Json
+libraryDependencies += "com.arangodb" % "arangodb-spark-connector" % "1.0.2"
+```
+
 ## Learn more
+
+### Configuration
+
+| property                  | default value  |
+|---------------------------|----------------|
+| arangodb.hosts            | 127.0.0.1:8529 |
+| arangodb.user             | root           |
+| arangodb.password         |                |
+| arangodb.useSsl           | false          |
+| arangodb.ssl.keyStoreFile |                |
+| arangodb.ssl.passPhrase   |                |
+| arangodb.ssl.protocol     | TLS            |
 
 ### Setup SparkContext
 Scala
@@ -35,7 +43,7 @@ val conf = new SparkConf()
     .set("arangodb.user", "myUser")
     .set("arangodb.password", "myPassword")
     ...
-    
+
 val sc = new SparkContext(conf)
 ```
 Java
@@ -45,7 +53,7 @@ SparkConf conf = new SparkConf()
     .set("arangodb.user", "myUser")
     .set("arangodb.password", "myPassword");
     ...
-    
+
 JavaSparkContext sc = new JavaSparkContext(conf);
 ```
 
