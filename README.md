@@ -25,15 +25,15 @@ libraryDependencies += "com.arangodb" % "arangodb-spark-connector" % "1.0.2"
 
 ### Configuration
 
-| property                  | default value  |
-|---------------------------|----------------|
-| arangodb.hosts            | 127.0.0.1:8529 |
-| arangodb.user             | root           |
-| arangodb.password         |                |
-| arangodb.useSsl           | false          |
-| arangodb.ssl.keyStoreFile |                |
-| arangodb.ssl.passPhrase   |                |
-| arangodb.ssl.protocol     | TLS            |
+| property-key              | description                            | default value  |
+|---------------------------|----------------------------------------|----------------|
+| arangodb.hosts            | comma separated list of ArangoDB hosts | 127.0.0.1:8529 |
+| arangodb.user             | basic authentication user              | root           |
+| arangodb.password         | basic authentication password          |                |
+| arangodb.useSsl           | use SSL connection                     | false          |
+| arangodb.ssl.keyStoreFile | SSL certificate keystore file          |                |
+| arangodb.ssl.passPhrase   | SSL pass phrase                        |                |
+| arangodb.ssl.protocol     | SSL protocol                           | TLS            |
 
 ### Setup SparkContext
 Scala
