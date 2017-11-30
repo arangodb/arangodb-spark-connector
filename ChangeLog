@@ -1,3 +1,5 @@
 v1.0.2 (2017-11-30)
 ---------------------------
 * added SSL support
+* added velocypack-module-jdk8
+* added velocypack-module-scala

@@ -67,6 +67,7 @@ package object spark {
 
   private[spark] def createArangoBuilder(options: ArangoOptions): ArangoDB.Builder = {
     val builder = new ArangoDB.Builder()
+    builder.registerModules(new VPackJdk8Module, new VPackScalaModule)
     options.hosts.foreach { hosts(_).foreach(host => builder.host(host._1, host._2)) }
     options.user.foreach { builder.user(_) }
     options.password.foreach { builder.password(_) }
