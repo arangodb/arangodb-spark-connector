@@ -2,6 +2,8 @@
 
 # arangodb-spark-connector
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.arangodb/arangodb-spark-connector/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.arangodb/arangodb-spark-connector)
+
 ## Maven
 
 ```XML
