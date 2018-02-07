@@ -10,6 +10,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.arangodb.ArangoDB;
@@ -18,6 +19,7 @@ import com.arangodb.spark.ArangoSpark;
 import com.arangodb.spark.ReadOptions;
 import com.arangodb.spark.rdd.api.java.ArangoJavaRDD;
 
+@Ignore
 public class ArangoSparkJavaSSLReadTest {
 
 	private static final String DB = "spark_test_db";

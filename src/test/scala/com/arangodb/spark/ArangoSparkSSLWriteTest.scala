@@ -35,7 +35,9 @@ import com.arangodb.ArangoDB
 import com.arangodb.ArangoDBException
 import com.arangodb.velocypack.VPackBuilder
 import com.arangodb.velocypack.ValueType
+import org.scalatest.Ignore
 
+@Ignore
 class ArangoSparkSSLWriteTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach with SharedSparkContextSSL {
 
   val DB = "spark_test_db"

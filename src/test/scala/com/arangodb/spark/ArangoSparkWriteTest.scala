@@ -111,15 +111,4 @@ class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll
     checkDocumentCount(100)
   }
 
-  test("save with SSL") {
-    checkDocumentCount(0)
-
-    val documents = sc.parallelize((1 to 100).map { i => TestEntity(i) })
-    val keyStore = this.getClass().getResource("/example.truststore").getFile()
-    ArangoSpark.save(documents, COLLECTION, WriteOptions(DB).hosts("127.0.0.1:8530")
-      .useSsl(true).sslKeyStoreFile(keyStore).sslPassPhrase("12345678"))
-
-    checkDocumentCount(100)
-  }
-
 }

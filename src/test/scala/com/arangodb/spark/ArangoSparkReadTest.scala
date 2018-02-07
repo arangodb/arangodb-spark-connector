@@ -37,6 +37,7 @@ import com.arangodb.velocypack.VPackBuilder
 import com.arangodb.velocypack.ValueType
 import scala.reflect.ClassTag
 import com.arangodb.spark.rdd.partition.ArangoPartitionerSinglePartition
+import org.scalatest.Ignore
 
 class ArangoSparkReadTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach with SharedSparkContext {
 
@@ -82,10 +83,4 @@ class ArangoSparkReadTest extends FunSuite with Matchers with BeforeAndAfterAll 
     rdd2.count() should be(50)
   }
 
-  test("load with SSL") {
-    val keyStore = this.getClass().getResource("/example.truststore").getFile()
-    val rdd = ArangoSpark.load[TestEntity](sc, COLLECTION, ReadOptions(DB).hosts("127.0.0.1:8530")
-      .useSsl(true).sslKeyStoreFile(keyStore).sslPassPhrase("12345678"))
-    rdd.count() should be(100)
-  }
 }

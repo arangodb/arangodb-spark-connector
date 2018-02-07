@@ -11,6 +11,7 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.arangodb.ArangoDB;
@@ -18,6 +19,7 @@ import com.arangodb.ArangoDBException;
 import com.arangodb.spark.ArangoSpark;
 import com.arangodb.spark.WriteOptions;
 
+@Ignore
 public class ArangoSparkJavaSSLWriteTest {
 
 	private static final String DB = "spark_test_db";

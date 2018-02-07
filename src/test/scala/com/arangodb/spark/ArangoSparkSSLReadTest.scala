@@ -37,7 +37,9 @@ import com.arangodb.velocypack.VPackBuilder
 import com.arangodb.velocypack.ValueType
 import scala.reflect.ClassTag
 import com.arangodb.spark.rdd.partition.ArangoPartitionerSinglePartition
+import org.scalatest.Ignore
 
+@Ignore
 class ArangoSparkSSLReadTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach with SharedSparkContextSSL {
 
   val DB = "spark_test_db"
