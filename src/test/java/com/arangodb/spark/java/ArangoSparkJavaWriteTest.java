@@ -29,8 +29,7 @@ public class ArangoSparkJavaWriteTest {
 	public static void setup() {
 		arangoDB = new ArangoDB.Builder().build();
 		SparkConf conf = new SparkConf(false).setMaster("local")
-				.setAppName("test").set("arangodb.user", "root")
-				.set("arangodb.password", "");
+				.setAppName("test");
 		sc = new JavaSparkContext(conf);
 		try {
 			arangoDB.db(DB).drop();

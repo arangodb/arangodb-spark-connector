@@ -13,8 +13,6 @@ trait SharedSparkContext extends BeforeAndAfterAll { self: Suite =>
   val conf = new SparkConf(false)
     .setMaster("local")
     .setAppName("test")
-    .set("arangodb.user", "root")
-    .set("arangodb.password", "")
 
   override def beforeAll() {
     super.beforeAll()
