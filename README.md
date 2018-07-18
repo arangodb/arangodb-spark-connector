@@ -4,39 +4,10 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.arangodb/arangodb-spark-connector/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.arangodb/arangodb-spark-connector)
 
-### Load data from ArangoDB
+The official ArangoDB Spark Connector.
 
-Scala
-
-```Scala
-val rdd = ArangoSpark.load[MyBean](sc, "myCollection")
-```
-
-Java
-
-```Java
-ArangoJavaRDD<MyBean> rdd = ArangoSpark.load(sc, "myCollection", MyBean.class);
-```
-
-### Load data from ArangoDB with server-side filtering
-
-Scala
-
-```Scala
-val rdd = ArangoSpark.load[MyBean](sc, "myCollection").filter("doc.name == 'John'")
-```
-
-Java
-
-```Java
-ArangoJavaRDD<MyBean> rdd = ArangoSpark.load(sc, "myCollection", MyBean.class).filter("doc.name == 'John'");
-```
-
-### Save data (RDD, Dataframe or Dataset) to ArangoDB
-
-```Scala
-ArangoSpark.save(rdd, "myCollection")
-```
+- [Getting Started](docs/Drivers/SparkConnector/GettingStarted/README.md)
+- [Reference](docs/Drivers/SparkConnector/Reference/README.md)
 
 ## Learn more
 
