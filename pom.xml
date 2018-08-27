@@ -70,9 +70,9 @@
 			<plugin>
 				<groupId>com.google.code.sbt-compiler-maven-plugin</groupId>
 				<artifactId>sbt-compiler-maven-plugin</artifactId>
-				<version>1.0.0-beta9</version>
+				<version>1.0.0</version>
 				<configuration>
-					<scalaVersion>2.11.8</scalaVersion>
+					<scalaVersion>2.11.12</scalaVersion>
 				</configuration>
 				<executions>
 					<execution>
