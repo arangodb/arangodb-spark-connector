@@ -27,6 +27,7 @@ import com.arangodb.spark.rdd.partition.ArangoPartitioner
 
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLProtocolException
+import com.arangodb.Protocol
 
 case class ReadOptions(override val database: String = "_system",
                        val collection: String = null,
@@ -37,7 +38,8 @@ case class ReadOptions(override val database: String = "_system",
                        override val useSsl: Option[Boolean] = None,
                        override val sslKeyStoreFile: Option[String] = None,
                        override val sslPassPhrase: Option[String] = None,
-                       override val sslProtocol: Option[String] = None) extends ArangoOptions {
+                       override val sslProtocol: Option[String] = None,
+                       override val protocol: Option[Protocol] = None) extends ArangoOptions {
 
   def this() = this(database = "_system")
 
@@ -59,6 +61,8 @@ case class ReadOptions(override val database: String = "_system",
 
   def sslProtocol(sslProtocol: String): ReadOptions = copy(sslProtocol = Some(sslProtocol))
 
+  def protocol(protocol: Protocol): ReadOptions = copy(protocol = Some(protocol));
+
   def copy(database: String = database,
            collection: String = collection,
            partitioner: ArangoPartitioner = partitioner,
@@ -68,8 +72,9 @@ case class ReadOptions(override val database: String = "_system",
            useSsl: Option[Boolean] = useSsl,
            sslKeyStoreFile: Option[String] = sslKeyStoreFile,
            sslPassPhrase: Option[String] = sslPassPhrase,
-           sslProtocol: Option[String] = sslProtocol): ReadOptions = {
-    ReadOptions(database, collection, partitioner, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol)
+           sslProtocol: Option[String] = sslProtocol,
+           protocol: Option[Protocol] = protocol): ReadOptions = {
+    ReadOptions(database, collection, partitioner, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol)
   }
 
 }

@@ -42,6 +42,7 @@ package object spark {
   val PropertySslKeyStoreFile = "arangodb.ssl.keyStoreFile"
   val PropertySslPassPhrase = "arangodb.ssl.passPhrase"
   val PropertySslProtocol = "arangodb.ssl.protocol"
+  val PropertyProtocol = "arangodb.protocol"
 
   private[spark] def createReadOptions(options: ReadOptions, sc: SparkConf): ReadOptions = {
     options.copy(
@@ -51,7 +52,8 @@ package object spark {
       useSsl = options.useSsl.orElse(some(Try(sc.get(PropertyUseSsl, null).toBoolean).getOrElse(false))),
       sslKeyStoreFile = options.sslKeyStoreFile.orElse(some(sc.get(PropertySslKeyStoreFile, null))),
       sslPassPhrase = options.sslPassPhrase.orElse(some(sc.get(PropertySslPassPhrase, null))),
-      sslProtocol = options.sslProtocol.orElse(some(sc.get(PropertySslProtocol, null))))
+      sslProtocol = options.sslProtocol.orElse(some(sc.get(PropertySslProtocol, null))),
+      protocol = options.protocol.orElse(some(Protocol.valueOf(sc.get(PropertyProtocol, "VST")))))
   }
 
   private[spark] def createWriteOptions(options: WriteOptions, sc: SparkConf): WriteOptions = {
@@ -62,7 +64,8 @@ package object spark {
       useSsl = options.useSsl.orElse(some(Try(sc.get(PropertyUseSsl, null).toBoolean).getOrElse(false))),
       sslKeyStoreFile = options.sslKeyStoreFile.orElse(some(sc.get(PropertySslKeyStoreFile, null))),
       sslPassPhrase = options.sslPassPhrase.orElse(some(sc.get(PropertySslPassPhrase, null))),
-      sslProtocol = options.sslProtocol.orElse(some(sc.get(PropertySslProtocol, null))))
+      sslProtocol = options.sslProtocol.orElse(some(sc.get(PropertySslProtocol, null))),
+      protocol = options.protocol.orElse(some(Protocol.valueOf(sc.get(PropertyProtocol, "VST")))))
   }
 
   private[spark] def createArangoBuilder(options: ArangoOptions): ArangoDB.Builder = {
@@ -75,6 +78,7 @@ package object spark {
     if (options.sslKeyStoreFile.isDefined && options.sslPassPhrase.isDefined) {
       builder.sslContext(createSslContext(options.sslKeyStoreFile.get, options.sslPassPhrase.get, options.sslProtocol.getOrElse("TLS")))
     }
+    options.protocol.foreach { builder.useProtocol(_) }
     builder
   }
 
@@ -94,6 +98,9 @@ package object spark {
     if (value != null) Some(value) else None
 
   private def some(value: Boolean): Option[Boolean] =
+    Some(value)
+
+  private def some(value: Protocol): Option[Protocol] =
     Some(value)
 
   private def hosts(hosts: String): List[(String, Int)] =

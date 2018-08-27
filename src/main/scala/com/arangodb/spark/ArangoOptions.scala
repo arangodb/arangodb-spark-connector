@@ -1,6 +1,7 @@
 package com.arangodb.spark
 
 import javax.net.ssl.SSLContext
+import com.arangodb.Protocol
 
 trait ArangoOptions {
 
@@ -19,5 +20,7 @@ trait ArangoOptions {
   def sslPassPhrase: Option[String] = None
 
   def sslProtocol: Option[String] = None
+
+  def protocol: Option[Protocol] = None
 
 }

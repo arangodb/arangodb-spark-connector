@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import com.arangodb.ArangoDB;
 import com.arangodb.ArangoDBException;
+import com.arangodb.Protocol;
 import com.arangodb.spark.ArangoSpark;
 import com.arangodb.spark.ReadOptions;
 import com.arangodb.spark.rdd.api.java.ArangoJavaRDD;
@@ -64,4 +65,10 @@ public class ArangoSparkJavaReadTest {
 		assertThat(rdd2.count(), is(50L));
 	}
 
+	@Test
+	public void loadAllWithHTTP() {
+		ArangoJavaRDD<TestJavaEntity> rdd = ArangoSpark.load(sc, COLLECTION, new ReadOptions().database(DB).protocol(Protocol.HTTP_JSON), TestJavaEntity.class);
+		assertThat(rdd.count(), is(100L));
+	}
+	
 }

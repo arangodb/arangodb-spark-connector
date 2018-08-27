@@ -192,6 +192,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.scalatest</groupId>
 			<artifactId>scalatest_2.11</artifactId>
 			<scope>test</scope>
@@ -239,6 +244,11 @@
 				<groupId>org.scalatest</groupId>
 				<artifactId>scalatest_2.11</artifactId>
 				<version>3.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.5.1</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>

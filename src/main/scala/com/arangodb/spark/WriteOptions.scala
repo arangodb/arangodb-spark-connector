@@ -23,6 +23,7 @@
 package com.arangodb.spark
 
 import javax.net.ssl.SSLContext
+import com.arangodb.Protocol
 
 case class WriteOptions(override val database: String = "_system",
                         override val hosts: Option[String] = None,
@@ -31,7 +32,8 @@ case class WriteOptions(override val database: String = "_system",
                         override val useSsl: Option[Boolean] = None,
                         override val sslKeyStoreFile: Option[String] = None,
                         override val sslPassPhrase: Option[String] = None,
-                        override val sslProtocol: Option[String] = None) extends ArangoOptions {
+                        override val sslProtocol: Option[String] = None,
+                        override val protocol: Option[Protocol] = None) extends ArangoOptions {
 
   def this() = this(database = "_system")
 
@@ -51,6 +53,8 @@ case class WriteOptions(override val database: String = "_system",
 
   def sslProtocol(sslProtocol: String): WriteOptions = copy(sslProtocol = Some(sslProtocol))
 
+  def protocol(protocol: Protocol): WriteOptions = copy(protocol = Some(protocol));
+
   def copy(database: String = database,
            hosts: Option[String] = hosts,
            user: Option[String] = user,
@@ -58,8 +62,9 @@ case class WriteOptions(override val database: String = "_system",
            useSsl: Option[Boolean] = useSsl,
            sslKeyStoreFile: Option[String] = sslKeyStoreFile,
            sslPassPhrase: Option[String] = sslPassPhrase,
-           sslProtocol: Option[String] = sslProtocol): WriteOptions = {
-    WriteOptions(database, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol)
+           sslProtocol: Option[String] = sslProtocol,
+           protocol: Option[Protocol] = protocol): WriteOptions = {
+    WriteOptions(database, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol)
   }
 
 }
