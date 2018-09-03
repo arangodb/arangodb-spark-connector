@@ -26,12 +26,16 @@ import com.arangodb.spark.ReadOptions
 import com.arangodb.spark._
 import com.arangodb.velocystream.Request
 import com.arangodb.velocystream.RequestType
+import com.arangodb.model.AqlQueryOptions
 
 trait ArangoPartitioner extends Serializable {
 
   def createPartitions(options: ReadOptions): Array[ArangoPartition]
 
-  def createPartition(index: Int, shardIds: Array[String], options: ReadOptions): ArangoPartition =
-    ArangoPartition(index, options, Map[String, Object]("@col" -> options.collection), QueryOptions(shardIds))
+  def createPartition(index: Int, shardIds: Array[String], options: ReadOptions): ArangoPartition = {
+    val queryOptions = new AqlQueryOptions()
+    shardIds.foreach { queryOptions.shardIds(_) }
+    ArangoPartition(index, options, Map[String, Object]("@col" -> options.collection), queryOptions)
+  }
 
 }

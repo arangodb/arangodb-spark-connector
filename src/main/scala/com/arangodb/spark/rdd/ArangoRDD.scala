@@ -50,7 +50,7 @@ class ArangoRDD[T: ClassTag](
   }
 
   private def createCursor(arangoDB: ArangoDB, readOptions: ReadOptions, partition: ArangoPartition)(implicit clazz: ClassTag[T]): ArangoCursor[T] =
-    arangoDB.db(readOptions.database).query(s"FOR doc IN @@col ${createFilter()} RETURN doc", partition.bindVars.asJava, null, clazz.runtimeClass.asInstanceOf[Class[T]])
+    arangoDB.db(readOptions.database).query(s"FOR doc IN @@col ${createFilter()} RETURN doc", partition.bindVars.asJava, partition.queryOptions, clazz.runtimeClass.asInstanceOf[Class[T]])
 
   private def createFilter(): String =
     conditions match {
