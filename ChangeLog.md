@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [1.0.5] - 2018-09-03
+
 ### Fixed
 
 - fixed partitioning with `ArangoSpark#load`
@@ -30,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - added velocypack-module-jdk8
 - added velocypack-module-scala
 
-[unreleased]: https://github.com/arangodb/arangodb-spark-connector/compare/1.0.4...HEAD
+[unreleased]: https://github.com/arangodb/arangodb-spark-connector/compare/1.0.5...HEAD
+[1.0.5]: https://github.com/arangodb/arangodb-spark-connector/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/arangodb/arangodb-spark-connector/compare/1.0.3...1.0.4
 [1.0.3]: https://github.com/arangodb/arangodb-spark-connector/compare/1.0.2...1.0.3
