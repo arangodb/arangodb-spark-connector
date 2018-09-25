@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### Fixed
+
+- upgraded dependency arangodb-java-driver 5.0.1
+  - fixed connection stickiness
+
 ## [1.0.6] - 2018-09-03
 
 ### Fixed
