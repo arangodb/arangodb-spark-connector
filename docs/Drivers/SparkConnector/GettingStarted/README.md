@@ -23,14 +23,14 @@ libraryDependencies += "com.arangodb" % "arangodb-spark-connector" % "1.0.2"
 
 | property-key              | description                            | default value  |
 | ------------------------- | -------------------------------------- | -------------- |
-| arangodb.hosts            | comma separated list of ArangoDB hosts | 127.0.0.1:8529 |
-| arangodb.user             | basic authentication user              | root           |
-| arangodb.password         | basic authentication password          |                |
-| arangodb.protocol         | network protocol                       | VST            |
-| arangodb.useSsl           | use SSL connection                     | false          |
-| arangodb.ssl.keyStoreFile | SSL certificate keystore file          |                |
-| arangodb.ssl.passPhrase   | SSL pass phrase                        |                |
-| arangodb.ssl.protocol     | SSL protocol                           | TLS            |
+| spark.arangodb.hosts            | comma separated list of ArangoDB hosts | 127.0.0.1:8529 |
+| spark.arangodb.user             | basic authentication user              | root           |
+| spark.arangodb.password         | basic authentication password          |                |
+| spark.arangodb.protocol         | network protocol                       | VST            |
+| spark.arangodb.useSsl           | use SSL connection                     | false          |
+| spark.arangodb.ssl.keyStoreFile | SSL certificate keystore file          |                |
+| spark.arangodb.ssl.passPhrase   | SSL pass phrase                        |                |
+| spark.arangodb.ssl.protocol     | SSL protocol                           | TLS            |
 
 ## Setup SparkContext
 
@@ -38,9 +38,9 @@ libraryDependencies += "com.arangodb" % "arangodb-spark-connector" % "1.0.2"
 
 ```Scala
 val conf = new SparkConf()
-    .set("arangodb.hosts", "127.0.0.1:8529")
-    .set("arangodb.user", "myUser")
-    .set("arangodb.password", "myPassword")
+    .set("spark.arangodb.hosts", "127.0.0.1:8529")
+    .set("spark.arangodb.user", "myUser")
+    .set("spark.arangodb.password", "myPassword")
     ...
 
 val sc = new SparkContext(conf)
@@ -50,9 +50,9 @@ val sc = new SparkContext(conf)
 
 ```Java
 SparkConf conf = new SparkConf()
-    .set("arangodb.hosts", "127.0.0.1:8529")
-    .set("arangodb.user", "myUser")
-    .set("arangodb.password", "myPassword");
+    .set("spark.arangodb.hosts", "127.0.0.1:8529")
+    .set("spark.arangodb.user", "myUser")
+    .set("spark.arangodb.password", "myPassword");
     ...
 
 JavaSparkContext sc = new JavaSparkContext(conf);

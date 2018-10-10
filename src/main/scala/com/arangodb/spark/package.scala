@@ -35,14 +35,14 @@ import com.arangodb.velocypack.module.scala.VPackScalaModule
 
 package object spark {
 
-  val PropertyHosts = "arangodb.hosts"
-  val PropertyUser = "arangodb.user"
-  val PropertyPassword = "arangodb.password"
-  val PropertyUseSsl = "arangodb.useSsl"
-  val PropertySslKeyStoreFile = "arangodb.ssl.keyStoreFile"
-  val PropertySslPassPhrase = "arangodb.ssl.passPhrase"
-  val PropertySslProtocol = "arangodb.ssl.protocol"
-  val PropertyProtocol = "arangodb.protocol"
+  val PropertyHosts = "spark.arangodb.hosts"
+  val PropertyUser = "spark.arangodb.user"
+  val PropertyPassword = "spark.arangodb.password"
+  val PropertyUseSsl = "spark.arangodb.useSsl"
+  val PropertySslKeyStoreFile = "spark.arangodb.ssl.keyStoreFile"
+  val PropertySslPassPhrase = "spark.arangodb.ssl.passPhrase"
+  val PropertySslProtocol = "spark.arangodb.ssl.protocol"
+  val PropertyProtocol = "spark.arangodb.protocol"
 
   private[spark] def createReadOptions(options: ReadOptions, sc: SparkConf): ReadOptions = {
     options.copy(
