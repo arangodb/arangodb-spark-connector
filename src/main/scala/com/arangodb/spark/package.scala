@@ -44,28 +44,48 @@ package object spark {
   val PropertySslProtocol = "spark.arangodb.ssl.protocol"
   val PropertyProtocol = "spark.arangodb.protocol"
 
+  def stripSparkPerfix(prop:String):String = prop.replaceFirst("spark.","")
+
   private[spark] def createReadOptions(options: ReadOptions, sc: SparkConf): ReadOptions = {
     options.copy(
-      hosts = options.hosts.orElse(some(sc.get(PropertyHosts, null))),
-      user = options.user.orElse(some(sc.get(PropertyUser, null))),
-      password = options.password.orElse(some(sc.get(PropertyPassword, null))),
-      useSsl = options.useSsl.orElse(some(Try(sc.get(PropertyUseSsl, null).toBoolean).getOrElse(false))),
-      sslKeyStoreFile = options.sslKeyStoreFile.orElse(some(sc.get(PropertySslKeyStoreFile, null))),
-      sslPassPhrase = options.sslPassPhrase.orElse(some(sc.get(PropertySslPassPhrase, null))),
-      sslProtocol = options.sslProtocol.orElse(some(sc.get(PropertySslProtocol, null))),
-      protocol = options.protocol.orElse(some(Protocol.valueOf(sc.get(PropertyProtocol, "VST")))))
+      hosts = options.hosts.orElse(some(sc.get(PropertyHosts,
+        sc.get(stripSparkPerfix(PropertyHosts), null)))),
+      user = options.user.orElse(some(sc.get(PropertyUser,
+        sc.get(stripSparkPerfix(PropertyUser), null)))),
+      password = options.password.orElse(some(sc.get(PropertyPassword,
+        sc.get(stripSparkPerfix(PropertyPassword), null)))),
+      useSsl = options.useSsl.orElse(some(Try(sc.get(PropertyUseSsl,
+        sc.get(stripSparkPerfix(PropertyUseSsl), null)).toBoolean).getOrElse(false))),
+      sslKeyStoreFile = options.sslKeyStoreFile.orElse(some(sc.get(PropertySslKeyStoreFile,
+        sc.get(stripSparkPerfix(PropertySslKeyStoreFile), null)))),
+      sslPassPhrase = options.sslPassPhrase.orElse(some(sc.get(PropertySslPassPhrase,
+        sc.get(stripSparkPerfix(PropertySslPassPhrase), null)))),
+      sslProtocol = options.sslProtocol.orElse(some(sc.get(PropertySslProtocol,
+        sc.get(stripSparkPerfix(PropertySslProtocol), null)))),
+      protocol = options.protocol.orElse(some(Protocol.valueOf(sc.get(PropertyProtocol,
+        sc.get(stripSparkPerfix(PropertyProtocol), "VST")))))
+    )
   }
 
   private[spark] def createWriteOptions(options: WriteOptions, sc: SparkConf): WriteOptions = {
     options.copy(
-      hosts = options.hosts.orElse(some(sc.get(PropertyHosts, null))),
-      user = options.user.orElse(some(sc.get(PropertyUser, null))),
-      password = options.password.orElse(some(sc.get(PropertyPassword, null))),
-      useSsl = options.useSsl.orElse(some(Try(sc.get(PropertyUseSsl, null).toBoolean).getOrElse(false))),
-      sslKeyStoreFile = options.sslKeyStoreFile.orElse(some(sc.get(PropertySslKeyStoreFile, null))),
-      sslPassPhrase = options.sslPassPhrase.orElse(some(sc.get(PropertySslPassPhrase, null))),
-      sslProtocol = options.sslProtocol.orElse(some(sc.get(PropertySslProtocol, null))),
-      protocol = options.protocol.orElse(some(Protocol.valueOf(sc.get(PropertyProtocol, "VST")))))
+      hosts = options.hosts.orElse(some(sc.get(PropertyHosts,
+        sc.get(stripSparkPerfix(PropertyHosts), null)))),
+      user = options.user.orElse(some(sc.get(PropertyUser,
+        sc.get(stripSparkPerfix(PropertyUser), null)))),
+      password = options.password.orElse(some(sc.get(PropertyPassword,
+        sc.get(stripSparkPerfix(PropertyPassword), null)))),
+      useSsl = options.useSsl.orElse(some(Try(sc.get(PropertyUseSsl,
+        sc.get(stripSparkPerfix(PropertyUseSsl), null)).toBoolean).getOrElse(false))),
+      sslKeyStoreFile = options.sslKeyStoreFile.orElse(some(sc.get(PropertySslKeyStoreFile,
+        sc.get(stripSparkPerfix(PropertySslKeyStoreFile), null)))),
+      sslPassPhrase = options.sslPassPhrase.orElse(some(sc.get(PropertySslPassPhrase,
+        sc.get(stripSparkPerfix(PropertySslPassPhrase), null)))),
+      sslProtocol = options.sslProtocol.orElse(some(sc.get(PropertySslProtocol,
+        sc.get(stripSparkPerfix(PropertySslProtocol), null)))),
+      protocol = options.protocol.orElse(some(Protocol.valueOf(sc.get(PropertyProtocol,
+        sc.get(stripSparkPerfix(PropertyProtocol), "VST")))))
+    )
   }
 
   private[spark] def createArangoBuilder(options: ArangoOptions): ArangoDB.Builder = {
