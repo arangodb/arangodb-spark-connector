@@ -24,6 +24,7 @@ package com.arangodb.spark
 
 import javax.net.ssl.SSLContext
 import com.arangodb.Protocol
+import com.arangodb.entity.LoadBalancingStrategy
 
 case class WriteOptions(override val database: String = "_system",
                         override val hosts: Option[String] = None,
@@ -33,7 +34,10 @@ case class WriteOptions(override val database: String = "_system",
                         override val sslKeyStoreFile: Option[String] = None,
                         override val sslPassPhrase: Option[String] = None,
                         override val sslProtocol: Option[String] = None,
-                        override val protocol: Option[Protocol] = None) extends ArangoOptions {
+                        override val protocol: Option[Protocol] = None,
+                        override val maxConnections: Option[Int] = None,
+                        override val acquireHostList: Option[Boolean] = None,
+                        override val loadBalancingStrategy: Option[LoadBalancingStrategy] = None) extends ArangoOptions {
 
   def this() = this(database = "_system")
 
@@ -53,8 +57,14 @@ case class WriteOptions(override val database: String = "_system",
 
   def sslProtocol(sslProtocol: String): WriteOptions = copy(sslProtocol = Some(sslProtocol))
 
-  def protocol(protocol: Protocol): WriteOptions = copy(protocol = Some(protocol));
+  def protocol(protocol: Protocol): WriteOptions = copy(protocol = Some(protocol))
 
+  def maxConnections(maxConnections: Int): WriteOptions = copy(maxConnections = Some(maxConnections))
+  
+  def acquireHostList(acquireHostList: Boolean): WriteOptions = copy(acquireHostList = Some(acquireHostList))
+  
+  def loadBalancingStrategy(loadBalancingStrategy: LoadBalancingStrategy): WriteOptions = copy(loadBalancingStrategy = Some(loadBalancingStrategy))
+  
   def copy(database: String = database,
            hosts: Option[String] = hosts,
            user: Option[String] = user,
@@ -63,8 +73,11 @@ case class WriteOptions(override val database: String = "_system",
            sslKeyStoreFile: Option[String] = sslKeyStoreFile,
            sslPassPhrase: Option[String] = sslPassPhrase,
            sslProtocol: Option[String] = sslProtocol,
-           protocol: Option[Protocol] = protocol): WriteOptions = {
-    WriteOptions(database, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol)
+           protocol: Option[Protocol] = protocol,
+           maxConnections: Option[Int] = maxConnections,
+           acquireHostList: Option[Boolean] = acquireHostList,
+           loadBalancingStrategy: Option[LoadBalancingStrategy] = loadBalancingStrategy): WriteOptions = {
+    WriteOptions(database, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol, maxConnections, acquireHostList, loadBalancingStrategy)
   }
 
 }

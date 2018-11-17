@@ -32,6 +32,7 @@ import javax.net.ssl.TrustManagerFactory
 import java.io.FileInputStream
 import com.arangodb.velocypack.module.jdk8.VPackJdk8Module
 import com.arangodb.velocypack.module.scala.VPackScalaModule
+import com.arangodb.entity.LoadBalancingStrategy
 
 package object spark {
 
@@ -43,6 +44,9 @@ package object spark {
   val PropertySslPassPhrase = "arangodb.ssl.passPhrase"
   val PropertySslProtocol = "arangodb.ssl.protocol"
   val PropertyProtocol = "arangodb.protocol"
+  val PropertyMaxConnections = "arangodb.maxConnections"
+  val PropertyAcquireHostList = "arangodb.acquireHostList"
+  val PropertyLoadBalancingStrategy = "arangodb.loadBalancingStrategy"
 
   private[spark] def createReadOptions(options: ReadOptions, sc: SparkConf): ReadOptions = {
     options.copy(
@@ -53,7 +57,10 @@ package object spark {
       sslKeyStoreFile = options.sslKeyStoreFile.orElse(some(sc.get(PropertySslKeyStoreFile, null))),
       sslPassPhrase = options.sslPassPhrase.orElse(some(sc.get(PropertySslPassPhrase, null))),
       sslProtocol = options.sslProtocol.orElse(some(sc.get(PropertySslProtocol, null))),
-      protocol = options.protocol.orElse(some(Protocol.valueOf(sc.get(PropertyProtocol, "VST")))))
+      protocol = options.protocol.orElse(some(Protocol.valueOf(sc.get(PropertyProtocol, "VST")))),
+      maxConnections = options.maxConnections.orElse(some(Try(sc.get(PropertyMaxConnections, null).toInt).getOrElse(1))),
+      acquireHostList = options.acquireHostList.orElse(some(Try(sc.get(PropertyAcquireHostList, null).toBoolean).getOrElse(false))),
+      loadBalancingStrategy = options.loadBalancingStrategy.orElse(some(LoadBalancingStrategy.valueOf(sc.get(PropertyLoadBalancingStrategy, "NONE")))))
   }
 
   private[spark] def createWriteOptions(options: WriteOptions, sc: SparkConf): WriteOptions = {
@@ -65,7 +72,10 @@ package object spark {
       sslKeyStoreFile = options.sslKeyStoreFile.orElse(some(sc.get(PropertySslKeyStoreFile, null))),
       sslPassPhrase = options.sslPassPhrase.orElse(some(sc.get(PropertySslPassPhrase, null))),
       sslProtocol = options.sslProtocol.orElse(some(sc.get(PropertySslProtocol, null))),
-      protocol = options.protocol.orElse(some(Protocol.valueOf(sc.get(PropertyProtocol, "VST")))))
+      protocol = options.protocol.orElse(some(Protocol.valueOf(sc.get(PropertyProtocol, "VST")))),
+      maxConnections = options.maxConnections.orElse(some(Try(sc.get(PropertyMaxConnections, null).toInt).getOrElse(1))),
+      acquireHostList = options.acquireHostList.orElse(some(Try(sc.get(PropertyAcquireHostList, null).toBoolean).getOrElse(false))),
+      loadBalancingStrategy = options.loadBalancingStrategy.orElse(some(LoadBalancingStrategy.valueOf(sc.get(PropertyLoadBalancingStrategy, "NONE")))))
   }
 
   private[spark] def createArangoBuilder(options: ArangoOptions): ArangoDB.Builder = {
@@ -79,6 +89,9 @@ package object spark {
       builder.sslContext(createSslContext(options.sslKeyStoreFile.get, options.sslPassPhrase.get, options.sslProtocol.getOrElse("TLS")))
     }
     options.protocol.foreach { builder.useProtocol(_) }
+    options.maxConnections.foreach { builder.maxConnections(_) }
+    options.acquireHostList.foreach { builder.acquireHostList(_) }
+    options.loadBalancingStrategy.foreach { builder.loadBalancingStrategy(_) }
     builder
   }
 
@@ -97,10 +110,16 @@ package object spark {
   private def some(value: String): Option[String] =
     if (value != null) Some(value) else None
 
+  private def some(value: Int): Option[Int] =
+    Some(value)
+    
   private def some(value: Boolean): Option[Boolean] =
     Some(value)
 
   private def some(value: Protocol): Option[Protocol] =
+    Some(value)
+    
+  private def some(value: LoadBalancingStrategy): Option[LoadBalancingStrategy] =
     Some(value)
 
   private def hosts(hosts: String): List[(String, Int)] =

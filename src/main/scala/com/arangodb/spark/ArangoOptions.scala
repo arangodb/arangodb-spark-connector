@@ -2,6 +2,7 @@ package com.arangodb.spark
 
 import javax.net.ssl.SSLContext
 import com.arangodb.Protocol
+import com.arangodb.entity.LoadBalancingStrategy
 
 trait ArangoOptions {
 
@@ -22,5 +23,11 @@ trait ArangoOptions {
   def sslProtocol: Option[String] = None
 
   def protocol: Option[Protocol] = None
+  
+  def maxConnections: Option[Int] = None
+  
+  def acquireHostList: Option[Boolean] = None
+  
+  def loadBalancingStrategy: Option[LoadBalancingStrategy] = None
 
 }

@@ -28,6 +28,7 @@ import com.arangodb.spark.rdd.partition.ArangoPartitioner
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLProtocolException
 import com.arangodb.Protocol
+import com.arangodb.entity.LoadBalancingStrategy
 
 case class ReadOptions(override val database: String = "_system",
                        val collection: String = null,
@@ -39,7 +40,10 @@ case class ReadOptions(override val database: String = "_system",
                        override val sslKeyStoreFile: Option[String] = None,
                        override val sslPassPhrase: Option[String] = None,
                        override val sslProtocol: Option[String] = None,
-                       override val protocol: Option[Protocol] = None) extends ArangoOptions {
+                       override val protocol: Option[Protocol] = None,
+                       override val maxConnections: Option[Int] = None,
+                       override val acquireHostList: Option[Boolean] = None,
+                       override val loadBalancingStrategy: Option[LoadBalancingStrategy] = None) extends ArangoOptions {
 
   def this() = this(database = "_system")
 
@@ -61,7 +65,13 @@ case class ReadOptions(override val database: String = "_system",
 
   def sslProtocol(sslProtocol: String): ReadOptions = copy(sslProtocol = Some(sslProtocol))
 
-  def protocol(protocol: Protocol): ReadOptions = copy(protocol = Some(protocol));
+  def protocol(protocol: Protocol): ReadOptions = copy(protocol = Some(protocol))
+  
+  def maxConnections(maxConnections: Int): ReadOptions = copy(maxConnections = Some(maxConnections))
+  
+  def acquireHostList(acquireHostList: Boolean): ReadOptions = copy(acquireHostList = Some(acquireHostList))
+  
+  def loadBalancingStrategy(loadBalancingStrategy: LoadBalancingStrategy): ReadOptions = copy(loadBalancingStrategy = Some(loadBalancingStrategy))
 
   def copy(database: String = database,
            collection: String = collection,
@@ -73,8 +83,11 @@ case class ReadOptions(override val database: String = "_system",
            sslKeyStoreFile: Option[String] = sslKeyStoreFile,
            sslPassPhrase: Option[String] = sslPassPhrase,
            sslProtocol: Option[String] = sslProtocol,
-           protocol: Option[Protocol] = protocol): ReadOptions = {
-    ReadOptions(database, collection, partitioner, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol)
+           protocol: Option[Protocol] = protocol,
+           maxConnections: Option[Int] = maxConnections,
+           acquireHostList: Option[Boolean] = acquireHostList,
+           loadBalancingStrategy: Option[LoadBalancingStrategy] = loadBalancingStrategy): ReadOptions = {
+    ReadOptions(database, collection, partitioner, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol, maxConnections, acquireHostList, loadBalancingStrategy)
   }
 
 }
