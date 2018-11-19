@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+- upgraded dependency spark-core and spark-sql to 2.4.0
+
 ## [1.0.7] - 2018-09-25
 
 ### Fixed
