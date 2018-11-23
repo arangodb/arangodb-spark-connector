@@ -38,6 +38,7 @@ import com.arangodb.velocypack.ValueType
 import scala.reflect.ClassTag
 import com.arangodb.spark.rdd.partition.ArangoPartitionerSinglePartition
 import org.scalatest.Ignore
+import com.arangodb.entity.LoadBalancingStrategy
 
 class ArangoSparkReadTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach with SharedSparkContext {
 
@@ -81,6 +82,11 @@ class ArangoSparkReadTest extends FunSuite with Matchers with BeforeAndAfterAll 
     val rdd = ArangoSpark.load[TestEntity](sc, COLLECTION, ReadOptions(DB))
     val rdd2 = rdd.filter("doc.test <= 50")
     rdd2.count() should be(50)
+  }
+  
+  test("load all documents from collection with load balancing") {
+	  val rdd = ArangoSpark.load[TestEntity](sc, COLLECTION, ReadOptions(DB).acquireHostList(true).loadBalancingStrategy(LoadBalancingStrategy.ROUND_ROBIN))
+	  rdd.count() should be(100)
   }
 
 }

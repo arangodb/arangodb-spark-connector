@@ -18,6 +18,7 @@ import com.arangodb.Protocol;
 import com.arangodb.spark.ArangoSpark;
 import com.arangodb.spark.ReadOptions;
 import com.arangodb.spark.rdd.api.java.ArangoJavaRDD;
+import com.arangodb.entity.LoadBalancingStrategy;
 
 public class ArangoSparkJavaReadTest {
 
@@ -68,6 +69,12 @@ public class ArangoSparkJavaReadTest {
 	@Test
 	public void loadAllWithHTTP() {
 		ArangoJavaRDD<TestJavaEntity> rdd = ArangoSpark.load(sc, COLLECTION, new ReadOptions().database(DB).protocol(Protocol.HTTP_JSON), TestJavaEntity.class);
+		assertThat(rdd.count(), is(100L));
+	}
+	
+	@Test
+	public void loadAllWithLoadBalancing() {
+		ArangoJavaRDD<TestJavaEntity> rdd = ArangoSpark.load(sc, COLLECTION, new ReadOptions().database(DB).acquireHostList(true).loadBalancingStrategy(LoadBalancingStrategy.ROUND_ROBIN), TestJavaEntity.class);
 		assertThat(rdd.count(), is(100L));
 	}
 	
