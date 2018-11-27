@@ -25,4 +25,5 @@ project/plugins/project/
 /.settings
 /target
 /.idea
-/*.iml
+*.iml
+.flattened-pom.xml

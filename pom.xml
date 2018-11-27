@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.arangodb</groupId>
-	<artifactId>arangodb-spark-connector_${scala.compat.version}</artifactId>
+	<artifactId>arangodb-spark-connector</artifactId>
 	<version>1.0.9-SNAPSHOT</version>
 	<inceptionYear>2016</inceptionYear>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>arangodb-spark-connector</name>
 	<description>ArangoDB Spark Connector</description>
@@ -22,6 +22,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<scala.compat.version>2.11</scala.compat.version>
+		<scala.version>2.11.12</scala.version>
 	</properties>
 
 	<developers>
@@ -43,25 +45,10 @@
 		</repository>
 	</distributionManagement>
 
-	<profiles>
-		<profile>
-			<id>scala-2.11</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<scala.compat.version>2.11</scala.compat.version>
-				<scala.version>2.11.12</scala.version>
-			</properties>
-		</profile>
-		<profile>
-			<id>scala-2.12</id>
-			<properties>
-				<scala.compat.version>2.12</scala.compat.version>
-				<scala.version>2.12.7</scala.version>
-			</properties>
-		</profile>
-	</profiles>
+	<modules>
+		<module>2.11</module>
+		<module>2.12</module>
+	</modules>
 
 	<build>
 		<plugins>
@@ -98,6 +85,30 @@
 							<goal>addScalaSources</goal>
 							<goal>compile</goal>
 							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>1.0.1</version>
+				<configuration>
+					<flattenMode>minimum</flattenMode>
+				</configuration>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>flatten.clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
 						</goals>
 					</execution>
 				</executions>
