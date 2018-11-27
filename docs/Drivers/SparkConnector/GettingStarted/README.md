@@ -6,7 +6,7 @@
 <dependencies>
   <dependency>
     <groupId>com.arangodb</groupId>
-    <artifactId>arangodb-spark-connector</artifactId>
+    <artifactId>arangodb-spark-connector_2.11</artifactId>
     <version>1.0.2</version>
   </dependency>
 	....
@@ -16,7 +16,7 @@
 ## SBT
 
 ```Json
-libraryDependencies += "com.arangodb" % "arangodb-spark-connector" % "1.0.2"
+libraryDependencies += "com.arangodb" %% "arangodb-spark-connector" % "1.0.2"
 ```
 
 ## Configuration

@@ -45,7 +45,7 @@ class ArangoRDD[T: ClassTag](
 
   override def compute(split: Partition, context: TaskContext): Iterator[T] = {
     val arangoDB = createArangoBuilder(options).build()
-    context.addTaskCompletionListener { c => arangoDB.shutdown() }
+    context.addTaskCompletionListener[Unit] { c => arangoDB.shutdown() }
     createCursor(arangoDB, options, split.asInstanceOf[ArangoPartition]).asScala
   }
 

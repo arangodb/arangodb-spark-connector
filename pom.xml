@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.arangodb</groupId>
-	<artifactId>arangodb-spark-connector</artifactId>
+	<artifactId>arangodb-spark-connector_${scala.compat.version}</artifactId>
 	<version>1.0.9-SNAPSHOT</version>
 	<inceptionYear>2016</inceptionYear>
 	<packaging>jar</packaging>
@@ -43,6 +43,26 @@
 		</repository>
 	</distributionManagement>
 
+	<profiles>
+		<profile>
+			<id>scala-2.11</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<scala.compat.version>2.11</scala.compat.version>
+				<scala.version>2.11.12</scala.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>scala-2.12</id>
+			<properties>
+				<scala.compat.version>2.12</scala.compat.version>
+				<scala.version>2.12.7</scala.version>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -71,9 +91,6 @@
 				<groupId>com.google.code.sbt-compiler-maven-plugin</groupId>
 				<artifactId>sbt-compiler-maven-plugin</artifactId>
 				<version>1.0.0</version>
-				<configuration>
-					<scalaVersion>2.11.12</scalaVersion>
-				</configuration>
 				<executions>
 					<execution>
 						<id>default-sbt-compile</id>
@@ -183,12 +200,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-core_2.11</artifactId>
+			<artifactId>spark-core_${scala.compat.version}</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-sql_2.11</artifactId>
+			<artifactId>spark-sql_${scala.compat.version}</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -198,7 +215,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.scalatest</groupId>
-			<artifactId>scalatest_2.11</artifactId>
+			<artifactId>scalatest_${scala.compat.version}</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -232,17 +249,17 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.spark</groupId>
-				<artifactId>spark-core_2.11</artifactId>
+				<artifactId>spark-core_${scala.compat.version}</artifactId>
 				<version>2.4.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.spark</groupId>
-				<artifactId>spark-sql_2.11</artifactId>
+				<artifactId>spark-sql_${scala.compat.version}</artifactId>
 				<version>2.4.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.scalatest</groupId>
-				<artifactId>scalatest_2.11</artifactId>
+				<artifactId>scalatest_${scala.compat.version}</artifactId>
 				<version>3.0.0</version>
 			</dependency>
 			<dependency>
