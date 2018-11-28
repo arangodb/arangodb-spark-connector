@@ -231,6 +231,14 @@
 			<artifactId>velocypack-module-scala</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-scala_${scala.compat.version}</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.spark</groupId>
 			<artifactId>spark-core_${scala.compat.version}</artifactId>
 			<scope>provided</scope>
@@ -278,6 +286,16 @@
 				<groupId>com.arangodb</groupId>
 				<artifactId>velocypack-module-scala</artifactId>
 				<version>1.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>2.9.7</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.module</groupId>
+				<artifactId>jackson-module-scala_${scala.compat.version}</artifactId>
+				<version>2.9.7</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.spark</groupId>
