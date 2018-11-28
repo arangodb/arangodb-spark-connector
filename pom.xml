@@ -6,7 +6,7 @@
 	<artifactId>arangodb-spark-connector</artifactId>
 	<version>1.0.9-SNAPSHOT</version>
 	<inceptionYear>2016</inceptionYear>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
 	<name>arangodb-spark-connector</name>
 	<description>ArangoDB Spark Connector</description>
@@ -22,8 +22,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<scala.compat.version>2.11</scala.compat.version>
-		<scala.version>2.11.12</scala.version>
 	</properties>
 
 	<developers>
@@ -45,13 +43,56 @@
 		</repository>
 	</distributionManagement>
 
-	<modules>
-		<module>2.11</module>
-		<module>2.12</module>
-	</modules>
+	<profiles>
+		<profile>
+			<id>scala-2.11</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<scala.compat.version>2.11</scala.compat.version>
+				<scala.version>2.11.12</scala.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>scala-2.12</id>
+			<properties>
+				<scala.compat.version>2.12</scala.compat.version>
+				<scala.version>2.12.7</scala.version>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
+		<outputDirectory>${project.build.directory}/classes-${scala.compat.version}</outputDirectory>
+		<testOutputDirectory>${project.build.directory}/test-classes-${scala.compat.version}</testOutputDirectory>
 		<plugins>
+			<plugin>
+				<groupId>com.carrotgarden.maven</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>1.4.20180402132337</version>
+				<configuration>
+					<memberRemoveList>
+						<member>parent</member>
+						<member>properties</member>
+						<member>dependencyManagement</member>
+						<member>repositories</member>
+						<member>pluginRepositories</member>
+						<member>build</member>
+						<member>profiles</member>
+						<member>reporting</member>
+					</memberRemoveList>
+					<performOverrideIdentity>true</performOverrideIdentity>
+					<overrideArtifactId>${project.artifactId}_${scala.compat.version}</overrideArtifactId>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -88,30 +129,10 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>flatten-maven-plugin</artifactId>
-				<version>1.0.1</version>
 				<configuration>
-					<flattenMode>minimum</flattenMode>
+					<scalacOptions>-deprecation -unchecked -target:jvm-1.8</scalacOptions>
+					<javacOptions>-g -source 1.8 -target 1.8</javacOptions>
 				</configuration>
-				<executions>
-					<execution>
-						<id>flatten</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>flatten</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>flatten.clean</id>
-						<phase>clean</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
