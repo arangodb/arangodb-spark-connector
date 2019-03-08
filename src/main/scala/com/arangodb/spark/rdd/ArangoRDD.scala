@@ -44,9 +44,13 @@ class ArangoRDD[T: ClassTag](
     val conditions: List[String] = List()) extends RDD[T](sparkContext, Nil) {
 
   override def compute(split: Partition, context: TaskContext): Iterator[T] = {
+    
     val arangoDB = createArangoBuilder(options).build()
-    context.addTaskCompletionListener { c => arangoDB.shutdown() }
+    
+    context.addTaskCompletionListener[Unit] { c => arangoDB.shutdown() }
+    
     createCursor(arangoDB, options, split.asInstanceOf[ArangoPartition]).asScala
+    
   }
 
   private def createCursor(arangoDB: ArangoDB, readOptions: ReadOptions, partition: ArangoPartition)(implicit clazz: ClassTag[T]): ArangoCursor[T] =
