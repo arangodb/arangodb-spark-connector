@@ -48,11 +48,6 @@ public class RetestIssuesTest {
 	@Test
 	public void retestPhoneAddr() throws InterruptedException {
 
-		SparkSession spark = SparkSession
-			      .builder()
-			      .appName("JavaWordCount")
-			      .getOrCreate();
-		
 		List<TestPhoneEntity> phones = new ArrayList<>();
 		
 		for (int i = 0; i < 100; i++) {
@@ -65,10 +60,6 @@ public class RetestIssuesTest {
 		JavaRDD<TestPhoneEntity> documents = sc.parallelize(phones);
 		ArangoSpark.save(documents, COLLECTION, new WriteOptions().database(DB));
 		assertTrue(documents.collect().size() == 100);
-		
-//		Dataset<Row> createDataFrame = spark.createDataFrame(phones, TestPhoneEntity.class);
-//		ArangoSpark.save(createDataFrame, COLLECTION, new WriteOptions().database(DB));
-//		assertTrue(createDataFrame.collectAsList().size() == 100);
 		
 		assertTrue(arangoDB.db(DB).collection(COLLECTION).count().getCount() == 100);
 		
