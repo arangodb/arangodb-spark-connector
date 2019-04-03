@@ -56,11 +56,7 @@ class ArangoRDD[T: ClassTag](
   private def createCursor(arangoDB: ArangoDB, readOptions: ReadOptions, partition: ArangoPartition)(implicit clazz: ClassTag[T]): ArangoCursor[T] =
     arangoDB.db(readOptions.database).query(s"FOR doc IN @@col ${createFilter()} RETURN doc", partition.bindVars.asJava, partition.queryOptions, clazz.runtimeClass.asInstanceOf[Class[T]])
 
-  private def createFilter(): String =
-    conditions match {
-      case Nil => ""
-      case _   => conditions.map { "FILTER ".concat(_) } reduce { (x, y) => x + y }
-    }
+  private def createFilter(): String = conditions.map("FILTER " + _).mkString(" ")
 
   /**
    * Adds a filter condition. If used multiple times, the conditions will be combined with a logical AND.

@@ -82,6 +82,8 @@ class ArangoSparkReadTest extends FunSuite with Matchers with BeforeAndAfterAll 
     val rdd = ArangoSpark.load[TestEntity](sc, COLLECTION, ReadOptions(DB))
     val rdd2 = rdd.filter("doc.test <= 50")
     rdd2.count() should be(50)
+    val rdd3 = rdd.filter("40 < doc.test").filter("doc.test <= 50")
+    rdd3.count() should be(10)
   }
   
   test("load all documents from collection with load balancing") {
