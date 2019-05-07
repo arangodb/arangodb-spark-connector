@@ -74,7 +74,9 @@ public class ArangoSparkJavaReadTest {
 	
 	@Test
 	public void loadAllWithLoadBalancing() {
-		ArangoJavaRDD<TestJavaEntity> rdd = ArangoSpark.load(sc, COLLECTION, new ReadOptions().database(DB).acquireHostList(true).loadBalancingStrategy(LoadBalancingStrategy.ROUND_ROBIN), TestJavaEntity.class);
+		// set acquireHostList to false, due our tests are running inside a nested docker container. Settings this option to true will result in wrong ports beeing used.
+		// So we need to set those settings explicitly inside: 'src/test/resources/arangodb.properties' file
+		ArangoJavaRDD<TestJavaEntity> rdd = ArangoSpark.load(sc, COLLECTION, new ReadOptions().database(DB).acquireHostList(false).loadBalancingStrategy(LoadBalancingStrategy.ROUND_ROBIN), TestJavaEntity.class);
 		assertThat(rdd.count(), is(100L));
 	}
 	
