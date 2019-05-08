@@ -30,8 +30,7 @@ public class ArangoSparkJavaReadTest {
 	@BeforeClass
 	public static void setup() {
 		arangoDB = new ArangoDB.Builder().build();
-		SparkConf conf = new SparkConf(false).setMaster("local")
-				.setAppName("test");
+		SparkConf conf = new SparkConf(false).setMaster("local").set("arangodb.user", "root").set("arangodb.password", "test").setAppName("test");
 		sc = new JavaSparkContext(conf);
 		try {
 			arangoDB.db(DB).drop();
@@ -79,5 +78,4 @@ public class ArangoSparkJavaReadTest {
 		ArangoJavaRDD<TestJavaEntity> rdd = ArangoSpark.load(sc, COLLECTION, new ReadOptions().database(DB).acquireHostList(false).loadBalancingStrategy(LoadBalancingStrategy.ROUND_ROBIN), TestJavaEntity.class);
 		assertThat(rdd.count(), is(100L));
 	}
-	
 }
