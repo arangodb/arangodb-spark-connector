@@ -3,8 +3,11 @@ package com.arangodb.spark.java;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -28,10 +31,22 @@ public class ArangoSparkJavaReadTest {
 	private static JavaSparkContext sc;
 
 	@BeforeClass
-	public static void setup() {
+	public static void setup() throws IOException {
 		arangoDB = new ArangoDB.Builder().build();
-		SparkConf conf = new SparkConf(false).setMaster("local").set("arangodb.user", "root").set("arangodb.password", "test").setAppName("test");
+		
+		InputStream configFileStream = ClassLoader.getSystemClassLoader().getResourceAsStream("arangodb.properties");
+		Properties arangoDBProperties = new Properties();
+		arangoDBProperties.load(configFileStream);
+		
+		SparkConf conf = new SparkConf(false).setMaster("local").setAppName("test");
+		
+		// Set values from arangodb.properties to spark context 
+		arangoDBProperties.forEach((T, U) -> {
+			conf.set((String)T, (String)U);
+		});
+		
 		sc = new JavaSparkContext(conf);
+		
 		try {
 			arangoDB.db(DB).drop();
 		} catch (ArangoDBException e) {
