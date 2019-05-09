@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.spark.SparkConf;
@@ -30,10 +31,23 @@ public class RetestIssuesTest {
 	private static JavaSparkContext sc;
 	
 	@BeforeClass
-	public static void setup() {
+	public static void setup() throws IOException {
 		
-		arangoDB = new ArangoDB.Builder().build();
-		SparkConf conf = new SparkConf(false).setMaster("local").setAppName("test");
+		InputStream configFileStream = ClassLoader.getSystemClassLoader().getResourceAsStream("arangodb.properties");
+		
+		Properties arangoDBProperties = new Properties();
+		arangoDBProperties.load(configFileStream);
+		
+		arangoDB = new ArangoDB.Builder().build(); // Creating ArangDB Connection for direct checks
+		
+		SparkConf conf = new SparkConf(false) // Creating Spark Config
+									.setMaster("local")
+									.setAppName("test");
+		
+		// Set values from arangodb.properties to spark context 
+		arangoDBProperties.forEach((T, U) -> {
+			conf.set((String)T, (String)U);
+		});
 		
 		sc = new JavaSparkContext(conf);
 		
@@ -63,8 +77,8 @@ public class RetestIssuesTest {
 		
 		JavaRDD<TestPhoneEntity> documents = sc.parallelize(phones);
 		ArangoSpark.save(documents, COLLECTION, new WriteOptions().database(DB));
-		assertTrue(documents.collect().size() == 100);
 		
+		assertTrue(documents.collect().size() == 100);
 		assertTrue(arangoDB.db(DB).collection(COLLECTION).count().getCount() == 100);
 		
 	}
