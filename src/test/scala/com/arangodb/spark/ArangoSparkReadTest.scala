@@ -85,7 +85,7 @@ class ArangoSparkReadTest extends FunSuite with Matchers with BeforeAndAfterAll 
   }
   
   test("load all documents from collection with load balancing") {
-	  val rdd = ArangoSpark.load[TestEntity](sc, COLLECTION, ReadOptions(DB).acquireHostList(true).loadBalancingStrategy(LoadBalancingStrategy.ROUND_ROBIN))
+	  val rdd = ArangoSpark.load[TestEntity](sc, COLLECTION, ReadOptions(DB).acquireHostList(false).loadBalancingStrategy(LoadBalancingStrategy.ROUND_ROBIN))
 	  rdd.count() should be(100)
   }
 
