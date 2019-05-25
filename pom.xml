@@ -5,7 +5,7 @@
 
 	<groupId>com.arangodb</groupId>
 	<artifactId>arangodb-spark-connector_2.12</artifactId>
-	<version>1.0.9-SNAPSHOT</version>
+	<version>1.0.9</version>
 	<inceptionYear>2016</inceptionYear>
 	<packaging>jar</packaging>
 
@@ -245,7 +245,7 @@
 			<dependency>
 				<groupId>com.arangodb</groupId>
 				<artifactId>arangodb-java-driver</artifactId>
-				<version>5.0.4</version>
+				<version>5.0.5</version>
 			</dependency>
 			<dependency>
 				<groupId>com.arangodb</groupId>

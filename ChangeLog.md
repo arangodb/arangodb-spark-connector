@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [1.0.9] - 2019-05-24
+
+### Changed
+- update java driver version to 5.0.5
+
+
 ## [1.0.8] - 2018-11-23
 
 ### Added
