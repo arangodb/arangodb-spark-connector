@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [1.0.10] - 2019-06-14
+
+### Changed
+- update java driver version to 5.0.6
+
 ## [1.0.9] - 2019-05-24
 
 ### Changed
@@ -59,7 +64,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - added velocypack-module-jdk8
 - added velocypack-module-scala
 
-[unreleased]: https://github.com/arangodb/arangodb-spark-connector/compare/1.0.8...HEAD
+[unreleased]: https://github.com/arangodb/arangodb-spark-connector/compare/1.0.10...HEAD
+[1.0.10]: https://github.com/arangodb/arangodb-spark-connector/compare/1.0.9...1.0.10
+[1.0.9]: https://github.com/arangodb/arangodb-spark-connector/compare/1.0.8...1.0.9
 [1.0.8]: https://github.com/arangodb/arangodb-spark-connector/compare/1.0.7...1.0.8
 [1.0.7]: https://github.com/arangodb/arangodb-spark-connector/compare/1.0.6...1.0.7
 [1.0.6]: https://github.com/arangodb/arangodb-spark-connector/compare/1.0.5...1.0.6
