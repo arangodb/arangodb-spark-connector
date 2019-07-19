@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.arangodb</groupId>
-	<artifactId>arangodb-spark-connector_2.12</artifactId>
+	<artifactId>arangodb-spark-connector_2.11</artifactId>
 	<version>1.0.11</version>
 	<inceptionYear>2016</inceptionYear>
 	<packaging>jar</packaging>
@@ -73,7 +73,7 @@
 				<artifactId>sbt-compiler-maven-plugin</artifactId>
 				<version>1.0.0</version>
 				<configuration>
-					<scalaVersion>2.12.8</scalaVersion>
+					<scalaVersion>2.11.8</scalaVersion>
 				</configuration>
 				<executions>
 					<execution>
@@ -206,12 +206,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-core_2.12</artifactId>
+			<artifactId>spark-core_2.11</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-sql_2.12</artifactId>
+			<artifactId>spark-sql_2.11</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -225,7 +225,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.scalatest</groupId>
-			<artifactId>scalatest_2.12</artifactId>
+			<artifactId>scalatest_2.11</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -259,12 +259,12 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.spark</groupId>
-				<artifactId>spark-core_2.12</artifactId>
+				<artifactId>spark-core_2.11</artifactId>
 				<version>2.4.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.spark</groupId>
-				<artifactId>spark-sql_2.12</artifactId>
+				<artifactId>spark-sql_2.11</artifactId>
 				<version>2.4.0</version>
 			</dependency>
 			<dependency>
@@ -274,7 +274,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.scalatest</groupId>
-				<artifactId>scalatest_2.12</artifactId>
+				<artifactId>scalatest_2.11</artifactId>
 				<version>3.0.0</version>
 			</dependency>
 			<dependency>
