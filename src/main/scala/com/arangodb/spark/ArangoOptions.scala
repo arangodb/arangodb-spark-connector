@@ -28,6 +28,8 @@ trait ArangoOptions {
   
   def acquireHostList: Option[Boolean] = None
   
+  def acquireHostListInterval: Option[Int] = None
+  
   def loadBalancingStrategy: Option[LoadBalancingStrategy] = None
-
+  
 }

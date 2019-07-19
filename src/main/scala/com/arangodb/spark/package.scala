@@ -46,6 +46,7 @@ package object spark {
   val PropertyProtocol = "arangodb.protocol"
   val PropertyMaxConnections = "arangodb.maxConnections"
   val PropertyAcquireHostList = "arangodb.acquireHostList"
+  val PropertyAcquireHostListInterval = "arangodb.acquireHostListInterval"
   val PropertyLoadBalancingStrategy = "arangodb.loadBalancingStrategy"
 
   private[spark] def createReadOptions(options: ReadOptions, sc: SparkConf): ReadOptions = {
@@ -60,6 +61,7 @@ package object spark {
       protocol = options.protocol.orElse(some(Protocol.valueOf(sc.get(PropertyProtocol, "VST")))),
       maxConnections = options.maxConnections.orElse(some(Try(sc.get(PropertyMaxConnections, null).toInt).getOrElse(1))),
       acquireHostList = options.acquireHostList.orElse(some(Try(sc.get(PropertyAcquireHostList, null).toBoolean).getOrElse(false))),
+      acquireHostListInterval = options.acquireHostListInterval.orElse(some(Try(sc.get(PropertyAcquireHostListInterval, null).toInt).getOrElse(60000))),
       loadBalancingStrategy = options.loadBalancingStrategy.orElse(some(LoadBalancingStrategy.valueOf(sc.get(PropertyLoadBalancingStrategy, "NONE")))))
   }
 
@@ -75,6 +77,7 @@ package object spark {
       protocol = options.protocol.orElse(some(Protocol.valueOf(sc.get(PropertyProtocol, "VST")))),
       maxConnections = options.maxConnections.orElse(some(Try(sc.get(PropertyMaxConnections, null).toInt).getOrElse(1))),
       acquireHostList = options.acquireHostList.orElse(some(Try(sc.get(PropertyAcquireHostList, null).toBoolean).getOrElse(false))),
+      acquireHostListInterval = options.acquireHostListInterval.orElse(some(Try(sc.get(PropertyAcquireHostListInterval, null).toInt).getOrElse(60000))),
       loadBalancingStrategy = options.loadBalancingStrategy.orElse(some(LoadBalancingStrategy.valueOf(sc.get(PropertyLoadBalancingStrategy, "NONE")))))
   }
 
@@ -91,6 +94,7 @@ package object spark {
     options.protocol.foreach { builder.useProtocol(_) }
     options.maxConnections.foreach { builder.maxConnections(_) }
     options.acquireHostList.foreach { builder.acquireHostList(_) }
+    options.acquireHostListInterval.foreach { builder.acquireHostListInterval(_) }
     options.loadBalancingStrategy.foreach { builder.loadBalancingStrategy(_) }
     builder
   }

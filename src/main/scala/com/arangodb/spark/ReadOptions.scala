@@ -43,6 +43,7 @@ case class ReadOptions(override val database: String = "_system",
                        override val protocol: Option[Protocol] = None,
                        override val maxConnections: Option[Int] = None,
                        override val acquireHostList: Option[Boolean] = None,
+                       override val acquireHostListInterval: Option[Int] = None,
                        override val loadBalancingStrategy: Option[LoadBalancingStrategy] = None) extends ArangoOptions {
 
   def this() = this(database = "_system")
@@ -71,6 +72,8 @@ case class ReadOptions(override val database: String = "_system",
   
   def acquireHostList(acquireHostList: Boolean): ReadOptions = copy(acquireHostList = Some(acquireHostList))
   
+  def acquireHostListInterval(acquireHostListInterval: Int): ReadOptions = copy(acquireHostListInterval = Some(acquireHostListInterval))
+  
   def loadBalancingStrategy(loadBalancingStrategy: LoadBalancingStrategy): ReadOptions = copy(loadBalancingStrategy = Some(loadBalancingStrategy))
 
   def copy(database: String = database,
@@ -86,8 +89,9 @@ case class ReadOptions(override val database: String = "_system",
            protocol: Option[Protocol] = protocol,
            maxConnections: Option[Int] = maxConnections,
            acquireHostList: Option[Boolean] = acquireHostList,
+           acquireHostListInterval: Option[Int] = acquireHostListInterval,
            loadBalancingStrategy: Option[LoadBalancingStrategy] = loadBalancingStrategy): ReadOptions = {
-    ReadOptions(database, collection, partitioner, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol, maxConnections, acquireHostList, loadBalancingStrategy)
+    ReadOptions(database, collection, partitioner, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol, maxConnections, acquireHostList, acquireHostListInterval, loadBalancingStrategy)
   }
 
 }
