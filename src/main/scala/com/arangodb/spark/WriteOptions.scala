@@ -37,6 +37,7 @@ case class WriteOptions(override val database: String = "_system",
                         override val protocol: Option[Protocol] = None,
                         override val maxConnections: Option[Int] = None,
                         override val acquireHostList: Option[Boolean] = None,
+                        override val acquireHostListInterval: Option[Int] = None,
                         override val loadBalancingStrategy: Option[LoadBalancingStrategy] = None) extends ArangoOptions {
 
   def this() = this(database = "_system")
@@ -63,6 +64,8 @@ case class WriteOptions(override val database: String = "_system",
   
   def acquireHostList(acquireHostList: Boolean): WriteOptions = copy(acquireHostList = Some(acquireHostList))
   
+  def acquireHostListInterval(acquireHostListInterval: Int): WriteOptions = copy(acquireHostListInterval = Some(acquireHostListInterval))
+  
   def loadBalancingStrategy(loadBalancingStrategy: LoadBalancingStrategy): WriteOptions = copy(loadBalancingStrategy = Some(loadBalancingStrategy))
   
   def copy(database: String = database,
@@ -76,8 +79,9 @@ case class WriteOptions(override val database: String = "_system",
            protocol: Option[Protocol] = protocol,
            maxConnections: Option[Int] = maxConnections,
            acquireHostList: Option[Boolean] = acquireHostList,
+           acquireHostListInterval: Option[Int] = acquireHostListInterval,
            loadBalancingStrategy: Option[LoadBalancingStrategy] = loadBalancingStrategy): WriteOptions = {
-    WriteOptions(database, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol, maxConnections, acquireHostList, loadBalancingStrategy)
+    WriteOptions(database, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol, maxConnections, acquireHostList, acquireHostListInterval, loadBalancingStrategy)
   }
 
 }
