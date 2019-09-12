@@ -245,7 +245,7 @@
 			<dependency>
 				<groupId>com.arangodb</groupId>
 				<artifactId>arangodb-java-driver</artifactId>
-				<version>5.0.7</version>
+				<version>6.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.arangodb</groupId>
@@ -280,7 +280,7 @@
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
-				<version>4.5.6</version>
+				<version>4.5.9</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
