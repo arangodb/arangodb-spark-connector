@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [1.0.12] - 2019-09-12
+
+### Changed
+- update java driver version to 6.2.0
+
+### Fixed
+- Array Support
+
 ## [1.0.11] - 2019-07-19
 
 ### Added
