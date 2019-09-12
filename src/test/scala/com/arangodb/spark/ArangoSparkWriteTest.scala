@@ -24,17 +24,17 @@ package com.arangodb.spark
 
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.{DataFrame, Row, SQLContext, SparkSession}
 import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.FunSuite
 import org.scalatest.Matchers
-
 import com.arangodb.ArangoDB
 import com.arangodb.ArangoDBException
 import com.arangodb.velocypack.VPackBuilder
 import com.arangodb.velocypack.ValueType
+import org.apache.spark.sql.types.{ArrayType, IntegerType, StringType, StructField, StructType, TimestampType}
 
 class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach with SharedSparkContext {
 
@@ -109,6 +109,89 @@ class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll
     ArangoSpark.save(ds, COLLECTION, WriteOptions(DB))
 
     checkDocumentCount(100)
+  }
+
+  test("save a dataframe containing an array of strings to ArangoDB") {
+    checkDocumentCount(0)
+
+    val sparkConf = new SparkConf()
+      .setAppName("test")
+      .set("spark.broadcast.compress", "true")
+
+    // Create Spark Session
+    val sparkSession = SparkSession.builder
+      .getOrCreate
+
+    val dataTest = Seq(
+      Row("1", 8, Array("10", "11", "12")),
+      Row("2", 64, Array("13")),
+      Row("3", -27, Array("14", "15"))
+    )
+
+    val dataSchema = List(
+      StructField("_key", StringType, true),
+      StructField("number", IntegerType, true),
+      StructField("word", ArrayType(StringType, false), false)
+    )
+
+    val df: DataFrame = sparkSession.createDataFrame(
+      sc.parallelize(dataTest),
+      StructType(dataSchema)
+    )
+
+    ArangoSpark.saveDF(df, COLLECTION, WriteOptions(DB))
+
+    checkDocumentCount(3)
+  }
+
+  test("save a dataframe containing an array of struct to ArangoDB") {
+    checkDocumentCount(0)
+
+    val sqlContext= new org.apache.spark.sql.SQLContext(sc)
+    import sqlContext.implicits._
+
+
+
+    val sparkConf = new SparkConf()
+      .setAppName("test")
+      .set("spark.broadcast.compress", "true")
+
+    // Create Spark Session
+    val sparkSession = SparkSession.builder
+      .getOrCreate
+
+
+    val dataTest = Seq(Element("1", List(Url("yes"))))
+    val df = dataTest.toDF
+
+    ArangoSpark.saveDF(df, COLLECTION, WriteOptions(DB))
+
+    checkDocumentCount(1)
+  }
+
+  test("save a dataframe containing a struct of struct to ArangoDB") {
+    checkDocumentCount(0)
+
+    val sqlContext= new org.apache.spark.sql.SQLContext(sc)
+    import sqlContext.implicits._
+
+
+
+    val sparkConf = new SparkConf()
+      .setAppName("test")
+      .set("spark.broadcast.compress", "true")
+
+    // Create Spark Session
+    val sparkSession = SparkSession.builder
+      .getOrCreate
+
+
+    val dataTest = Seq(Park(Car(Person("John", "Woo")), Car(Person("Moi", "Coucou")), Person("victor", "Nettoyeur")))
+    val df = dataTest.toDF
+
+    ArangoSpark.saveDF(df, COLLECTION, WriteOptions(DB))
+
+    checkDocumentCount(1)
   }
 
 }

@@ -16,29 +16,31 @@
  * limitations under the License.
  *
  * Copyright holder is ArangoDB GmbH, Cologne, Germany
- * 
+ *
  * author Mark - mark at arangodb.com
  */
 
 package com.arangodb.spark.vpack
 
 import org.apache.spark.sql.Row
-import org.apache.spark.sql.types.ArrayType
-import org.apache.spark.sql.types.BooleanType
-import org.apache.spark.sql.types.DateType
-import org.apache.spark.sql.types.DecimalType
-import org.apache.spark.sql.types.DoubleType
-import org.apache.spark.sql.types.FloatType
-import org.apache.spark.sql.types.IntegerType
-import org.apache.spark.sql.types.LongType
-import org.apache.spark.sql.types.MapType
-import org.apache.spark.sql.types.NullType
-import org.apache.spark.sql.types.ShortType
-import org.apache.spark.sql.types.StringType
-import org.apache.spark.sql.types.StructField
-import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.types.TimestampType
-
+import org.apache.spark.sql.types.{
+  ArrayType,
+  BooleanType,
+  DataType,
+  DateType,
+  DecimalType,
+  DoubleType,
+  FloatType,
+  IntegerType,
+  LongType,
+  MapType,
+  NullType,
+  ShortType,
+  StringType,
+  StructField,
+  StructType,
+  TimestampType
+}
 import com.arangodb.velocypack.VPackBuilder
 import com.arangodb.velocypack.VPackSlice
 import com.arangodb.velocypack.ValueType
@@ -55,31 +57,80 @@ private[spark] object VPackUtils {
 
   private def addField(field: (StructField, Int), row: Row, builder: VPackBuilder): Unit = {
     val name = field._1.name
-    val i = field._2
+    val index = field._2
     field._1.dataType match {
-      case BooleanType    => builder.add(name, java.lang.Boolean.valueOf(row.getBoolean(i)))
-      case DoubleType     => builder.add(name, java.lang.Double.valueOf(row.getDouble(i)))
-      case FloatType      => builder.add(name, java.lang.Float.valueOf(row.getFloat(i)))
-      case LongType       => builder.add(name, java.lang.Long.valueOf(row.getLong(i)))
-      case IntegerType    => builder.add(name, java.lang.Integer.valueOf(row.getInt(i)))
-      case ShortType      => builder.add(name, java.lang.Short.valueOf(row.getShort(i)))
-      case StringType     => builder.add(name, java.lang.String.valueOf(row.getString(i)))
-      case DateType       => builder.add(name, row.getDate(i))
-      case TimestampType  => builder.add(name, row.getTimestamp(i))
-      case t: DecimalType => builder.add(name, row.getDecimal(i))
+      case BooleanType    => builder.add(name, java.lang.Boolean.valueOf(row.getBoolean(index)))
+      case DoubleType     => builder.add(name, java.lang.Double.valueOf(row.getDouble(index)))
+      case FloatType      => builder.add(name, java.lang.Float.valueOf(row.getFloat(index)))
+      case LongType       => builder.add(name, java.lang.Long.valueOf(row.getLong(index)))
+      case IntegerType    => builder.add(name, java.lang.Integer.valueOf(row.getInt(index)))
+      case ShortType      => builder.add(name, java.lang.Short.valueOf(row.getShort(index)))
+      case StringType     => builder.add(name, java.lang.String.valueOf(row.getString(index)));
+      case DateType       => builder.add(name, row.getDate(index))
+      case TimestampType  => builder.add(name, row.getTimestamp(index))
+      case t: DecimalType => builder.add(name, row.getDecimal(index))
       case t: MapType => {
         builder.add(name, ValueType.OBJECT)
-        row.getMap[String, Any](i).foreach { case (name, value) => addValue(name, value, builder) }
+        row.getMap[String, Any](index).foreach { case (name, value) => addValue(name, value, builder) }
         builder.close()
       }
       case t: ArrayType => {
         builder.add(name, ValueType.ARRAY)
-        row.getSeq(i).foreach { value => addValue(null, value, builder) }
+        addValues(row, index, builder, t.elementType)
         builder.close()
       }
       case NullType           => builder.add(name, ValueType.NULL)
-      case struct: StructType => builder.add(name, rowToVPack(row.getStruct(i)))
+      case struct: StructType => builder.add(name, rowToVPack(row.getStruct(index)))
       case _                  => // TODO
+    }
+  }
+
+  private def addValues(row: Row, index: Int, builder: VPackBuilder, itemType: DataType): Unit = {
+    itemType match {
+      case BooleanType =>
+        row.getSeq[Boolean](index).foreach { value =>
+          addValue(null, value, builder)
+        }
+      case DoubleType =>
+        row.getSeq[Double](index).foreach { value =>
+          addValue(null, value, builder)
+        }
+      case FloatType =>
+        row.getSeq[Float](index).foreach { value =>
+          addValue(null, value, builder)
+        }
+      case LongType =>
+        row.getSeq[Long](index).foreach { value =>
+          addValue(null, value, builder)
+        }
+      case IntegerType =>
+        row.getSeq[Int](index).foreach { value =>
+          addValue(null, value, builder)
+        }
+      case ShortType =>
+        row.getSeq[Short](index).foreach { value =>
+          addValue(null, value, builder)
+        }
+      case StringType =>
+        row.getSeq[String](index).foreach { value =>
+          addValue(null, value, builder)
+        }
+      case DateType =>
+        row.getSeq[java.sql.Date](index).foreach { value =>
+          addValue(null, value, builder)
+        }
+      case TimestampType =>
+        row.getSeq[java.sql.Timestamp](index).foreach { value =>
+          addValue(null, value, builder)
+        }
+      case s: StructType => {
+        row.getSeq[Row](index).foreach { value =>
+          builder.add(null, rowToVPack(value))
+        }
+      }
+      case t: MapType   => // TODO
+      case t: ArrayType => // TODO
+      case _            => // TODO
     }
   }
 
