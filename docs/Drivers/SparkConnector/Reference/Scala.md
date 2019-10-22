@@ -14,7 +14,7 @@ Save data from rdd or dataset into ArangoDB
 
 **Arguments**
 
-- **rdd**/**dataset**: `RDD[T]` or `Dataset[T]`
+- **rdd** / **dataset**: `RDD[T]` or `Dataset[T]`
 
   The rdd or dataset with the data to save
 
