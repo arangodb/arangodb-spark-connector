@@ -6,8 +6,8 @@
 
 The official ArangoDB Spark Connector.
 
-- [Getting Started](docs/Drivers/SparkConnector/GettingStarted/README.md)
-- [Reference](docs/Drivers/SparkConnector/Reference/README.md)
+- [Getting Started](https://www.arangodb.com/docs/stable/drivers/spark-connector-getting-started.html)
+- [Reference](https://www.arangodb.com/docs/stable/drivers/spark-connector-reference.html)
 
 ## Learn more
 
