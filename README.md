@@ -1,4 +1,4 @@
-![ArangoDB-Logo](https://docs.arangodb.com/assets/arangodb_logo_2016_inverted.png)
+![ArangoDB-Logo](https://www.arangodb.com/docs/assets/arangodb_logo_2016_inverted.png)
 
 # arangodb-spark-connector
 
@@ -6,8 +6,8 @@
 
 The official ArangoDB Spark Connector.
 
-- [Getting Started](docs/Drivers/SparkConnector/GettingStarted/README.md)
-- [Reference](docs/Drivers/SparkConnector/Reference/README.md)
+- [Getting Started](https://www.arangodb.com/docs/stable/drivers/spark-connector-getting-started.html)
+- [Reference](https://www.arangodb.com/docs/stable/drivers/spark-connector-reference.html)
 
 ## Learn more
 
