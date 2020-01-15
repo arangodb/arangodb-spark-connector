@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [1.0.13] - 2020-01-15
+
+- updated java driver version to 6.5.0
+- fixed null Seq entries
+- fixed null values handling
+
 ## [1.0.12] - 2019-09-12
 
 ### Changed
