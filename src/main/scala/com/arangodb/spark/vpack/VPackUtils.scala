@@ -58,30 +58,34 @@ private[spark] object VPackUtils {
   private def addField(field: (StructField, Int), row: Row, builder: VPackBuilder): Unit = {
     val name = field._1.name
     val index = field._2
-    field._1.dataType match {
-      case BooleanType    => builder.add(name, java.lang.Boolean.valueOf(row.getBoolean(index)))
-      case DoubleType     => builder.add(name, java.lang.Double.valueOf(row.getDouble(index)))
-      case FloatType      => builder.add(name, java.lang.Float.valueOf(row.getFloat(index)))
-      case LongType       => builder.add(name, java.lang.Long.valueOf(row.getLong(index)))
-      case IntegerType    => builder.add(name, java.lang.Integer.valueOf(row.getInt(index)))
-      case ShortType      => builder.add(name, java.lang.Short.valueOf(row.getShort(index)))
-      case StringType     => builder.add(name, java.lang.String.valueOf(row.getString(index)));
-      case DateType       => builder.add(name, row.getDate(index))
-      case TimestampType  => builder.add(name, row.getTimestamp(index))
-      case t: DecimalType => builder.add(name, row.getDecimal(index))
-      case t: MapType => {
-        builder.add(name, ValueType.OBJECT)
-        row.getMap[String, Any](index).foreach { case (name, value) => addValue(name, value, builder) }
-        builder.close()
+    if (row.isNullAt(index)) {
+      builder.add(name, ValueType.NULL)
+    } else {
+      field._1.dataType match {
+        case BooleanType    => builder.add(name, java.lang.Boolean.valueOf(row.getBoolean(index)))
+        case DoubleType     => builder.add(name, java.lang.Double.valueOf(row.getDouble(index)))
+        case FloatType      => builder.add(name, java.lang.Float.valueOf(row.getFloat(index)))
+        case LongType       => builder.add(name, java.lang.Long.valueOf(row.getLong(index)))
+        case IntegerType    => builder.add(name, java.lang.Integer.valueOf(row.getInt(index)))
+        case ShortType      => builder.add(name, java.lang.Short.valueOf(row.getShort(index)))
+        case StringType     => builder.add(name, java.lang.String.valueOf(row.getString(index)));
+        case DateType       => builder.add(name, row.getDate(index))
+        case TimestampType  => builder.add(name, row.getTimestamp(index))
+        case t: DecimalType => builder.add(name, row.getDecimal(index))
+        case t: MapType => {
+          builder.add(name, ValueType.OBJECT)
+          row.getMap[String, Any](index).foreach { case (name, value) => addValue(name, value, builder) }
+          builder.close()
+        }
+        case t: ArrayType => {
+          builder.add(name, ValueType.ARRAY)
+          addValues(row, index, builder, t.elementType)
+          builder.close()
+        }
+        case NullType           => builder.add(name, ValueType.NULL)
+        case struct: StructType => builder.add(name, rowToVPack(row.getStruct(index)))
+        case _                  => // TODO
       }
-      case t: ArrayType => {
-        builder.add(name, ValueType.ARRAY)
-        addValues(row, index, builder, t.elementType)
-        builder.close()
-      }
-      case NullType           => builder.add(name, ValueType.NULL)
-      case struct: StructType => builder.add(name, rowToVPack(row.getStruct(index)))
-      case _                  => // TODO
     }
   }
 

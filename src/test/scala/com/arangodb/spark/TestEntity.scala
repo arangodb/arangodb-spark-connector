@@ -31,6 +31,7 @@ case class TestEntity(@BeanProperty var test: Int = Int.MaxValue,
                       @BeanProperty var longValue: Long = Long.MaxValue,
                       @BeanProperty var intValue: Int = Int.MaxValue,
                       @BeanProperty var shortValue: Short = Short.MaxValue,
+                      @BeanProperty var nullString: String = null,
                       @BeanProperty var stringValue: String = "test") {
 
   def this() = this(test = Int.MaxValue)
