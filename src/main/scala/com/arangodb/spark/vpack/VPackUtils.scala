@@ -49,9 +49,13 @@ private[spark] object VPackUtils {
 
   def rowToVPack(row: Row): VPackSlice = {
     val builder = new VPackBuilder()
-    builder.add(ValueType.OBJECT)
-    row.schema.fields.zipWithIndex.foreach { addField(_, row, builder) }
-    builder.close()
+    if (row == null) {
+      builder.add(ValueType.NULL)
+    } else {
+      builder.add(ValueType.OBJECT)
+      row.schema.fields.zipWithIndex.foreach { addField(_, row, builder) }
+      builder.close()
+    }
     builder.slice()
   }
 

@@ -161,7 +161,7 @@ class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll
       .getOrCreate
 
 
-    val dataTest = Seq(Element("1", List(Url("yes"))))
+    val dataTest = Seq(Element("1", List(Url("yes"), null)))
     val df = dataTest.toDF
 
     ArangoSpark.saveDF(df, COLLECTION, WriteOptions(DB))
