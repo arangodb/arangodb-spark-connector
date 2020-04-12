@@ -122,7 +122,14 @@ object ArangoSpark {
       if (p.nonEmpty) {
         val arangoDB = createArangoBuilder(writeOptions).build()
         val col = arangoDB.db(writeOptions.database).collection(collection)
-        col.insertDocuments(map(p).toList.asJava)
+        val docs = map(p).toList.asJava
+        writeOptions.method match {
+          case "update"  => col.updateDocuments(docs)
+          case "replace" => col.replaceDocuments(docs)
+          case "insert"  => col.insertDocuments(docs)
+          case _ => throw new IllegalArgumentException("unknown arangodb write method, must be one of (insert|update|replace)")
+        }
+
         arangoDB.shutdown()
       }
     }

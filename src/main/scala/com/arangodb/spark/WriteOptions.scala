@@ -27,6 +27,7 @@ import com.arangodb.Protocol
 import com.arangodb.entity.LoadBalancingStrategy
 
 case class WriteOptions(override val database: String = "_system",
+                        val method: String = "insert",
                         override val hosts: Option[String] = None,
                         override val user: Option[String] = None,
                         override val password: Option[String] = None,
@@ -43,6 +44,8 @@ case class WriteOptions(override val database: String = "_system",
   def this() = this(database = "_system")
 
   def database(database: String): WriteOptions = copy(database = database)
+
+  def method(method: String): WriteOptions = copy(method = method)
 
   def hosts(hosts: String): WriteOptions = copy(hosts = Some(hosts))
 
@@ -69,6 +72,7 @@ case class WriteOptions(override val database: String = "_system",
   def loadBalancingStrategy(loadBalancingStrategy: LoadBalancingStrategy): WriteOptions = copy(loadBalancingStrategy = Some(loadBalancingStrategy))
   
   def copy(database: String = database,
+           method: String = method,
            hosts: Option[String] = hosts,
            user: Option[String] = user,
            password: Option[String] = password,
@@ -81,7 +85,7 @@ case class WriteOptions(override val database: String = "_system",
            acquireHostList: Option[Boolean] = acquireHostList,
            acquireHostListInterval: Option[Int] = acquireHostListInterval,
            loadBalancingStrategy: Option[LoadBalancingStrategy] = loadBalancingStrategy): WriteOptions = {
-    WriteOptions(database, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol, maxConnections, acquireHostList, acquireHostListInterval, loadBalancingStrategy)
+    WriteOptions(database, method, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol, maxConnections, acquireHostList, acquireHostListInterval, loadBalancingStrategy)
   }
 
 }
