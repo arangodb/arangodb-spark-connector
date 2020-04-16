@@ -27,6 +27,7 @@ import com.arangodb.Protocol
 import com.arangodb.entity.LoadBalancingStrategy
 
 case class WriteOptions(override val database: String = "_system",
+                        val method: WriteOptions.Method = WriteOptions.INSERT,
                         override val hosts: Option[String] = None,
                         override val user: Option[String] = None,
                         override val password: Option[String] = None,
@@ -39,10 +40,13 @@ case class WriteOptions(override val database: String = "_system",
                         override val acquireHostList: Option[Boolean] = None,
                         override val acquireHostListInterval: Option[Int] = None,
                         override val loadBalancingStrategy: Option[LoadBalancingStrategy] = None) extends ArangoOptions {
+  import WriteOptions._
 
   def this() = this(database = "_system")
 
   def database(database: String): WriteOptions = copy(database = database)
+
+  def method(method: Method): WriteOptions = copy(method = method)
 
   def hosts(hosts: String): WriteOptions = copy(hosts = Some(hosts))
 
@@ -61,14 +65,15 @@ case class WriteOptions(override val database: String = "_system",
   def protocol(protocol: Protocol): WriteOptions = copy(protocol = Some(protocol))
 
   def maxConnections(maxConnections: Int): WriteOptions = copy(maxConnections = Some(maxConnections))
-  
+
   def acquireHostList(acquireHostList: Boolean): WriteOptions = copy(acquireHostList = Some(acquireHostList))
-  
+
   def acquireHostListInterval(acquireHostListInterval: Int): WriteOptions = copy(acquireHostListInterval = Some(acquireHostListInterval))
-  
+
   def loadBalancingStrategy(loadBalancingStrategy: LoadBalancingStrategy): WriteOptions = copy(loadBalancingStrategy = Some(loadBalancingStrategy))
-  
+
   def copy(database: String = database,
+           method: Method = method,
            hosts: Option[String] = hosts,
            user: Option[String] = user,
            password: Option[String] = password,
@@ -81,7 +86,34 @@ case class WriteOptions(override val database: String = "_system",
            acquireHostList: Option[Boolean] = acquireHostList,
            acquireHostListInterval: Option[Int] = acquireHostListInterval,
            loadBalancingStrategy: Option[LoadBalancingStrategy] = loadBalancingStrategy): WriteOptions = {
-    WriteOptions(database, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol, maxConnections, acquireHostList, acquireHostListInterval, loadBalancingStrategy)
+    WriteOptions(database, method, hosts, user, password, useSsl, sslKeyStoreFile, sslPassPhrase, sslProtocol, protocol, maxConnections, acquireHostList, acquireHostListInterval, loadBalancingStrategy)
   }
+
+}
+
+object WriteOptions {
+
+  /**
+   * method to save documents to arangodb
+   */
+  sealed trait Method
+
+  /**
+   * save documents by inserting
+   * @see [[com.arangodb.ArangoCollection#insertDocuments(java.util.Collection)]]
+   */
+  case object INSERT extends Method
+
+  /**
+   * save documents by updating
+   * @see [[com.arangodb.ArangoCollection#updateDocuments(java.util.Collection)]]
+   */
+  case object UPDATE extends Method
+
+  /**
+   * save documents by replacing
+   * @see [[com.arangodb.ArangoCollection#replaceDocuments(java.util.Collection)]]
+   */
+  case object REPLACE extends Method
 
 }

@@ -32,8 +32,7 @@ import org.scalatest.FunSuite
 import org.scalatest.Matchers
 import com.arangodb.ArangoDB
 import com.arangodb.ArangoDBException
-import com.arangodb.velocypack.VPackBuilder
-import com.arangodb.velocypack.ValueType
+import com.arangodb.velocypack.{VPackBuilder, VPackSlice, ValueType}
 import org.apache.spark.sql.types.{ArrayType, IntegerType, StringType, StructField, StructType, TimestampType}
 
 class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll with BeforeAndAfterEach with SharedSparkContext {
@@ -192,6 +191,79 @@ class ArangoSparkWriteTest extends FunSuite with Matchers with BeforeAndAfterAll
     ArangoSpark.saveDF(df, COLLECTION, WriteOptions(DB))
 
     checkDocumentCount(1)
+  }
+
+  test("save by updating documents") {
+    checkDocumentCount(0)
+
+    val sparkConf = new SparkConf()
+      .setAppName("test")
+      .set("spark.broadcast.compress", "true")
+
+    // Create Spark Session
+    val sparkSession = SparkSession.builder
+      .getOrCreate
+    import sparkSession.implicits._
+
+    // insert document
+    val insert = Seq(
+      ("ben", "Ben")
+    ).toDF("_key", "name")
+
+    ArangoSpark.saveDF(insert, COLLECTION, WriteOptions(DB).method(WriteOptions.INSERT))
+
+    checkDocumentCount(1)
+
+    // update document
+    val update = Seq(
+      ("ben", "Benjamin")
+    ).toDF("_key", "name")
+
+    ArangoSpark.saveDF(update, COLLECTION, WriteOptions(DB).method(WriteOptions.UPDATE))
+
+    checkDocumentCount(1)
+
+    val meUpdated = arangoDB.db(DB).collection(COLLECTION).getDocument("ben", classOf[VPackSlice])
+
+    meUpdated.get("name").getAsString should be("Benjamin")
+
+  }
+
+  test("save by replacing documents") {
+    checkDocumentCount(0)
+
+    val sparkConf = new SparkConf()
+      .setAppName("test")
+      .set("spark.broadcast.compress", "true")
+
+    // Create Spark Session
+    val sparkSession = SparkSession.builder
+      .getOrCreate
+    import sparkSession.implicits._
+
+    // insert document
+    val insert = Seq(
+      ("ben", "Ben", "FR")
+    ).toDF("_key", "name", "country")
+
+    ArangoSpark.saveDF(insert, COLLECTION, WriteOptions(DB).method(WriteOptions.INSERT))
+
+    checkDocumentCount(1)
+
+    // replace document (update name, drop country)
+    val out = Seq(
+      ("ben", "Benjamin")
+    ).toDF("_key", "name")
+
+    ArangoSpark.saveDF(out, COLLECTION, WriteOptions(DB).method(WriteOptions.REPLACE))
+
+    checkDocumentCount(1)
+
+    val meUpdated = arangoDB.db(DB).collection(COLLECTION).getDocument("ben", classOf[VPackSlice])
+
+    meUpdated.get("name").getAsString should be("Benjamin")
+    meUpdated.get("country").isNone should be(true)
+
   }
 
 }

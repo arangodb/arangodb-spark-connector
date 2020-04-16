@@ -122,7 +122,13 @@ object ArangoSpark {
       if (p.nonEmpty) {
         val arangoDB = createArangoBuilder(writeOptions).build()
         val col = arangoDB.db(writeOptions.database).collection(collection)
-        col.insertDocuments(map(p).toList.asJava)
+        val docs = map(p).toList.asJava
+        writeOptions.method match {
+          case WriteOptions.INSERT  => col.insertDocuments(docs)
+          case WriteOptions.UPDATE  => col.updateDocuments(docs)
+          case WriteOptions.REPLACE => col.replaceDocuments(docs)
+        }
+
         arangoDB.shutdown()
       }
     }
