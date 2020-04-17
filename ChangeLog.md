@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [1.1.0] - 2020-04-17
+
 - insert, update and replace write option
 - update java driver version to 6.6.2
 
