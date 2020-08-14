@@ -73,7 +73,7 @@
 				<artifactId>sbt-compiler-maven-plugin</artifactId>
 				<version>1.0.0</version>
 				<configuration>
-					<scalaVersion>2.12.8</scalaVersion>
+					<scalaVersion>2.12.12</scalaVersion>
 				</configuration>
 				<executions>
 					<execution>
