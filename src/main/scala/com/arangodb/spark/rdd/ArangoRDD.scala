@@ -25,18 +25,16 @@ package com.arangodb.spark.rdd
 import scala.collection.JavaConverters.asScalaIteratorConverter
 import scala.collection.JavaConverters.mapAsJavaMapConverter
 import scala.reflect.ClassTag
-
 import org.apache.spark.Partition
 import org.apache.spark.SparkContext
 import org.apache.spark.TaskContext
 import org.apache.spark.rdd.RDD
-
 import com.arangodb.ArangoCursor
 import com.arangodb.ArangoDB
 import com.arangodb.spark.ReadOptions
 import com.arangodb.spark.createArangoBuilder
 import com.arangodb.spark.rdd.api.java.ArangoJavaRDD
-import com.arangodb.spark.rdd.partition.ArangoPartition
+import com.arangodb.spark.rdd.partition.{ArangoPartition, ArangoPartitioner}
 
 class ArangoRDD[T: ClassTag](
     @transient override val sparkContext: SparkContext,
@@ -54,7 +52,7 @@ class ArangoRDD[T: ClassTag](
   }
 
   private def createCursor(arangoDB: ArangoDB, readOptions: ReadOptions, partition: ArangoPartition)(implicit clazz: ClassTag[T]): ArangoCursor[T] =
-    arangoDB.db(readOptions.database).query(s"FOR doc IN @@col ${createFilter()} RETURN doc", partition.bindVars.asJava, partition.queryOptions, clazz.runtimeClass.asInstanceOf[Class[T]])
+    arangoDB.db(readOptions.database).query(s"FOR doc IN @${ArangoPartitioner.ColKey} ${createFilter()} RETURN doc", partition.bindVars.asJava, partition.queryOptions, clazz.runtimeClass.asInstanceOf[Class[T]])
 
   private def createFilter(): String =
     conditions match {

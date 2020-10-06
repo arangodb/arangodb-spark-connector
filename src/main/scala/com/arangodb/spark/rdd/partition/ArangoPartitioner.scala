@@ -27,6 +27,11 @@ import com.arangodb.spark._
 import com.arangodb.velocystream.Request
 import com.arangodb.velocystream.RequestType
 import com.arangodb.model.AqlQueryOptions
+import com.arangodb.spark.rdd.partition.ArangoPartitioner.ColKey
+
+object ArangoPartitioner {
+  val ColKey = "@col"
+}
 
 trait ArangoPartitioner extends Serializable {
 
@@ -35,7 +40,7 @@ trait ArangoPartitioner extends Serializable {
   def createPartition(index: Int, shardIds: Array[String], options: ReadOptions): ArangoPartition = {
     val queryOptions = new AqlQueryOptions()
     shardIds.foreach { queryOptions.shardIds(_) }
-    ArangoPartition(index, options, Map[String, Object]("@col" -> options.collection), queryOptions)
+    ArangoPartition(index, options, Map[String, Object](ColKey -> options.collection), queryOptions)
   }
 
 }
