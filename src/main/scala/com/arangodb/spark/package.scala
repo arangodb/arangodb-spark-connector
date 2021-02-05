@@ -33,6 +33,7 @@ import java.io.FileInputStream
 
 import com.arangodb.entity.LoadBalancingStrategy
 import com.arangodb.mapping.ArangoJack
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
@@ -87,12 +88,13 @@ package object spark {
 
   private[spark] def createArangoBuilder(options: ArangoOptions): ArangoDB.Builder = {
     val serializer = new ArangoJack()
-    serializer.configure(it => it
-      .registerModule(DefaultScalaModule)
-      .registerModule(new ParameterNamesModule)
-      .registerModule(new Jdk8Module)
-      .registerModule(new JavaTimeModule)
-    )
+    serializer.configure(new ArangoJack.ConfigureFunction {
+      override def configure(mapper: ObjectMapper): Unit = mapper
+        .registerModule(DefaultScalaModule)
+        .registerModule(new ParameterNamesModule)
+        .registerModule(new Jdk8Module)
+        .registerModule(new JavaTimeModule)
+    })
     val builder = new ArangoDB.Builder().serializer(serializer)
     options.hosts.foreach { hosts(_).foreach(host => builder.host(host._1, host._2)) }
     options.user.foreach { builder.user(_) }
