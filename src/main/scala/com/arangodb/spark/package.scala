@@ -23,16 +23,19 @@
 package com.arangodb
 
 import scala.util.Try
-
 import org.apache.spark.SparkConf
 import java.security.KeyStore
+
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
 import java.io.FileInputStream
+
 import com.arangodb.velocypack.module.jdk8.VPackJdk8Module
 import com.arangodb.velocypack.module.scala.VPackScalaModule
 import com.arangodb.entity.LoadBalancingStrategy
+import com.arangodb.mapping.ArangoJack
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
 package object spark {
 
@@ -82,7 +85,9 @@ package object spark {
   }
 
   private[spark] def createArangoBuilder(options: ArangoOptions): ArangoDB.Builder = {
-    val builder = new ArangoDB.Builder()
+    val serializer = new ArangoJack()
+    serializer.configure(it => it.registerModule(DefaultScalaModule))
+    val builder = new ArangoDB.Builder().serializer(serializer)
     builder.registerModules(new VPackJdk8Module, new VPackScalaModule)
     options.hosts.foreach { hosts(_).foreach(host => builder.host(host._1, host._2)) }
     options.user.foreach { builder.user(_) }
