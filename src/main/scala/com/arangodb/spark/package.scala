@@ -23,16 +23,20 @@
 package com.arangodb
 
 import scala.util.Try
-
 import org.apache.spark.SparkConf
 import java.security.KeyStore
+
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
 import java.io.FileInputStream
-import com.arangodb.velocypack.module.jdk8.VPackJdk8Module
-import com.arangodb.velocypack.module.scala.VPackScalaModule
+
 import com.arangodb.entity.LoadBalancingStrategy
+import com.arangodb.mapping.ArangoJack
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
 package object spark {
 
@@ -82,8 +86,14 @@ package object spark {
   }
 
   private[spark] def createArangoBuilder(options: ArangoOptions): ArangoDB.Builder = {
-    val builder = new ArangoDB.Builder()
-    builder.registerModules(new VPackJdk8Module, new VPackScalaModule)
+    val serializer = new ArangoJack()
+    serializer.configure(it => it
+      .registerModule(DefaultScalaModule)
+      .registerModule(new ParameterNamesModule)
+      .registerModule(new Jdk8Module)
+      .registerModule(new JavaTimeModule)
+    )
+    val builder = new ArangoDB.Builder().serializer(serializer)
     options.hosts.foreach { hosts(_).foreach(host => builder.host(host._1, host._2)) }
     options.user.foreach { builder.user(_) }
     options.password.foreach { builder.password(_) }

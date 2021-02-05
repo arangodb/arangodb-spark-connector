@@ -198,11 +198,19 @@
 		</dependency>
 		<dependency>
 			<groupId>com.arangodb</groupId>
-			<artifactId>velocypack-module-jdk8</artifactId>
+			<artifactId>jackson-dataformat-velocypack</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.arangodb</groupId>
-			<artifactId>velocypack-module-scala_2.11</artifactId>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-parameter-names</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jdk8</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.spark</groupId>
@@ -248,34 +256,36 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
+				<groupId>com.fasterxml.jackson</groupId>
+				<artifactId>jackson-bom</artifactId>
+				<version>2.10.5</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
 				<groupId>com.arangodb</groupId>
 				<artifactId>arangodb-java-driver</artifactId>
-				<version>6.6.2</version>
+				<version>6.9.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.arangodb</groupId>
-				<artifactId>velocypack-module-jdk8</artifactId>
-				<version>1.1.0</version>
-			</dependency>
-			<dependency>
-				<groupId>com.arangodb</groupId>
-				<artifactId>velocypack-module-scala_2.11</artifactId>
-				<version>1.2.0</version>
+				<artifactId>jackson-dataformat-velocypack</artifactId>
+				<version>1.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.spark</groupId>
 				<artifactId>spark-core_2.11</artifactId>
-				<version>2.4.5</version>
+				<version>2.4.7</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.spark</groupId>
 				<artifactId>spark-sql_2.11</artifactId>
-				<version>2.4.5</version>
+				<version>2.4.7</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.spark</groupId>
 				<artifactId>spark-streaming_2.11</artifactId>
-				<version>2.4.5</version>
+				<version>2.4.7</version>
 			</dependency>
 			<dependency>
 				<groupId>com.thoughtworks.paranamer</groupId>
@@ -295,7 +305,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.13</version>
+				<version>4.13.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hamcrest</groupId>
