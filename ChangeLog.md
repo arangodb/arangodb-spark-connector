@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+- set `jackson-dataformat-velocypack` as default serializer
+- replaced velocypack modules with the jackson modules counterparts
+
 ## [1.1.0] - 2020-04-17
 
 - insert, update and replace write option
