@@ -6,10 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [2.0.0] - 2022-03-07
+
 - set `jackson-dataformat-velocypack` as default serializer
 - replaced velocypack modules with the jackson modules counterparts
 - updated `com.arangodb:arangodb-java-driver:6.16.1`
-- updated `com.arangodb:jackson-dataformat-velocypack:3.0.0`
+
+**NOTE:** this library is now deprecated in favor of the new [ArangoDB Connector for Apache Spark](https://github.com/arangodb/arangodb-spark-datasource).
 
 ## [1.1.0] - 2020-04-17
 
